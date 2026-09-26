@@ -19,7 +19,7 @@ function page_header(string $active, string $intro): void
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>COSI Predictor</title>
 <meta name="description" content="Suggests which ISMB Community of Special Interest (COSI) best fits a submission or Wikipedia article.">
-<link rel="stylesheet" href="assets/style.css?v=4">
+<link rel="stylesheet" href="assets/style.css?v=5">
 </head>
 <body>
 <header class="site-header">
@@ -45,6 +45,14 @@ function page_footer(string $extra = ''): void
   <p><?= h($extra) ?></p>
 <?php endif; ?>
   <p>Submitted text is not stored.</p>
+<?php $repo = cosi_config()['repo_url'] ?? ''; ?>
+<?php if ($repo !== ''): ?>
+  <p class="footer-links">
+    <a href="<?= h($repo) ?>">Source code on GitHub</a>
+    <span aria-hidden="true">·</span>
+    <a href="<?= h($repo) ?>/blob/main/METHODS.md">Methods</a>
+  </p>
+<?php endif; ?>
 </footer>
 </body>
 </html>

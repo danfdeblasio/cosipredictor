@@ -37,4 +37,7 @@ return [
 
     // Wikimedia asks API clients to identify themselves with contact info (a URL or email).
     'wikipedia_user_agent' => 'COSIPredictor/1.0 (https://cosipredictor.dandeblasio.com)',
+
+    // Linked from the page footer ("Source code on GitHub", "Methods"). '' hides the links.
+    'repo_url' => 'https://github.com/danfdeblasio/cosipredictor',
 ];

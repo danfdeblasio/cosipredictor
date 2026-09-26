@@ -296,3 +296,7 @@ table.preview { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
 .preview .text { color: var(--ink-2); min-width: 10rem; overflow-wrap: anywhere; }
 .preview .err { color: var(--error); }
 .format-list { margin: 0; padding-left: 1.2em; color: var(--ink-2); font-size: 0.9rem; line-height: 1.8; }
+
+.footer-links a { color: var(--ink-2); text-underline-offset: 2px; }
+.footer-links a:hover { color: var(--accent-ink); }
+.footer-links span { margin: 0 6px; }
