@@ -1,0 +1,24 @@
+# Master list of COSI tracks the model is trained on (one per line, '#' = comment).
+# Names are matched after normalization (case/spacing-insensitive, " COSI" suffix dropped).
+# At prediction time you can pass a smaller list with --cosis for tracks running that year.
+3DSIG
+BioInfo-Core
+BioVis
+BOKR
+BOSC
+CAMDA
+CompMS
+CSI
+Education
+EvolCompGen
+Function
+HiTSeq
+iRNA
+MICROBIOME
+MLCSB
+NetBio
+RegSys
+SysMod
+TextMining
+TransMed
+VarI

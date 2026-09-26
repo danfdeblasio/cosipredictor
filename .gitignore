@@ -1,0 +1,11 @@
+# Local environments and caches
+.venv/
+__pycache__/
+*.pyc
+cache/
+*.log
+.DS_Store
+
+# Prediction outputs
+predictions.csv
+wikipedia_predictions.csv
