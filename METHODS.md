@@ -66,7 +66,7 @@ For each field, text was:
 3. split into tokens with the regular expression `\b\w\w+\b`, i.e. runs of two or more Unicode word characters, so punctuation and single characters were discarded;
 4. filtered to remove the 318 words of the scikit-learn English stop-word list.
 
-Unigrams and bigrams were then formed from the remaining tokens. Multi-line keyword lists were joined into a single string before tokenization.
+Unigrams and bigrams were then formed from the remaining tokens. Multi-line keyword lists were joined into a single string before tokenization. No stemming or lemmatization was applied, so inflected forms (e.g. *network* and *networks*) are separate features. Stemming did not improve accuracy (see *Effect of stemming*).
 
 ### Vocabulary and weighting
 
@@ -131,6 +131,10 @@ Each submission was encoded as its title, a separator token, its keywords and it
 
 For the embedding models, $C$ was chosen by performance on the hold-out set. Their reported results are therefore optimistic relative to the untuned TF-IDF model.
 
+### Effect of stemming
+
+To test whether merging inflected word forms would help, we trained a second model identical to the first except that each token was reduced to its Porter stem (NLTK 3.9.2). Stemming was applied after stop-word removal and before bigram formation. Both models were evaluated on the same ISMB 2026 hold-out set, and differences were assessed with a paired bootstrap over test submissions (1,000 resamples).
+
 ### Final model
 
 After evaluation, the TF-IDF model was retrained with identical settings on all 9,103 submissions from 2019–2026. This final model was used for deployment.
@@ -172,6 +176,19 @@ Predicted probabilities were reasonably well calibrated (Table 3). When the top 
 
 The SPECTER2 embeddings performed worse than TF-IDF, even with their regularization chosen on the test set (Table 4). Late fusion also failed to improve on TF-IDF alone. We attribute this to COSI boundaries being defined largely by specific technical terms, such as instrument, data-type and method names. Sparse lexical features keep these terms, whereas a single dense vector does not. In addition, SPECTER2 reads only the first 512 tokens of each submission, so the end of a long abstract is ignored. The TF-IDF model was therefore retained.
 
+### Effect of stemming
+
+Porter stemming did not improve performance (Table 5). The top-ranked COSI changed from wrong to right for 45 test submissions and from right to wrong for 51. All differences were within ±0.01, and only top-5 accuracy differed significantly, in favor of the unstemmed model. We therefore kept the simpler unstemmed representation. It also avoids the need for a stemmer in the PHP implementation.
+
+**Table 5.** Effect of Porter stemming on the ISMB 2026 hold-out set (n = 1,280). Differences are stemmed minus unstemmed, with 95% paired bootstrap confidence intervals.
+
+| Metric | Unstemmed | Stemmed | Difference [95% CI] |
+|---|---|---|---|
+| Top-1 accuracy | 0.651 | 0.646 | −0.005 [−0.020, +0.011] |
+| Top-3 accuracy | 0.912 | 0.912 | 0.000 [−0.009, +0.009] |
+| Top-5 accuracy | 0.957 | 0.951 | −0.006 [−0.012, −0.001] |
+| Macro F1 | 0.630 | 0.636 | +0.006 [−0.020, +0.031] |
+
 **Table 4.** Comparison of document representations on the ISMB 2026 hold-out set.
 
 | Representation | Top-1 | Top-3 | Top-5 | Macro F1 |
@@ -199,7 +216,7 @@ Hidden maintenance categories are excluded. Disambiguation pages, identified by 
 
 To summarize what distinguishes each COSI, we ranked word stems by their average TF-IDF weight within each COSI. This is separate from the classifier. For each submission, the title, keywords and abstract were concatenated and preprocessed as described above (lowercasing, diacritic removal, tokenization and stop-word removal). Each token was then reduced to its Porter stem (NLTK 3.9.2), which groups word forms such as *sequence*, *sequences* and *sequencing*.
 
-Stems occurring in at least five submissions and in no more than half of all submissions were weighted with the same TF-IDF scheme as the classifier (sublinear term frequency, smoothed IDF, $\ell_2$ normalization). A stem's score for a COSI was its mean weight over that COSI's submissions. It is high when the stem occurs in many of the COSI's submissions but is uncommon across ISMB overall. The ten highest-scoring stems per COSI are shown in the web service, each displayed as its most frequent word form.
+Stems occurring in at least five submissions and in no more than half of all submissions were weighted with the same TF-IDF scheme as the classifier (sublinear term frequency, smoothed IDF, $\ell_2$ normalization). A stem's score for a COSI was its mean weight over that COSI's submissions. It is high when the stem occurs in many of the COSI's submissions but is uncommon across ISMB overall. The ten highest-scoring stems per COSI are shown in the web service, each displayed as its most frequent word form. Stemming is used only for this summary; the classifier uses unstemmed words.
 
 ## Implementation and deployment
 

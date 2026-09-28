@@ -18,10 +18,35 @@ from sklearn.pipeline import Pipeline
 from common import load_csvs, make_normalizer, prepare_text, read_cosi_list
 
 
-def build_pipeline():
-    def tfidf(**kw):
+class StemmedAnalyzer:
+    """sklearn's word analyzer (lowercase, strip accents, tokenize, drop stop words), then Porter
+    stemming, then n-grams built from the stems."""
+
+    def __init__(self, ngram_range=(1, 2)):
+        self.ngram_range = ngram_range
+        self._base = TfidfVectorizer(strip_accents="unicode", stop_words="english").build_analyzer()
+        self._cache = {}
+
+    def __call__(self, doc):
+        if not hasattr(self, "_stemmer"):
+            from nltk.stem import PorterStemmer
+            self._stemmer = PorterStemmer()
+        stems = []
+        for tok in self._base(doc):
+            s = self._cache.get(tok)
+            if s is None:
+                s = self._cache[tok] = self._stemmer.stem(tok)
+            stems.append(s)
+        lo, hi = self.ngram_range
+        return [" ".join(stems[i:i + n]) for n in range(lo, hi + 1) for i in range(len(stems) - n + 1)]
+
+
+def build_pipeline(stem=False):
+    def tfidf(ngram_range, **kw):
+        if stem:
+            return TfidfVectorizer(analyzer=StemmedAnalyzer(ngram_range), sublinear_tf=True, **kw)
         return TfidfVectorizer(sublinear_tf=True, strip_accents="unicode",
-                               stop_words="english", **kw)
+                               stop_words="english", ngram_range=ngram_range, **kw)
 
     features = ColumnTransformer([
         ("title", tfidf(ngram_range=(1, 2), min_df=2), "title"),

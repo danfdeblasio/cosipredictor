@@ -42,7 +42,7 @@ page_header('terms', 'The ten word stems that characterize each COSI’s accepte
     <p class="hint">
       Each bar is a stem’s average TF-IDF weight across that COSI’s training submissions (title, keywords and abstract combined; <?= number_format($data['submissions']) ?> submissions in total).
       A stem scores highly when it appears in many of the COSI’s submissions and is uncommon across ISMB overall.
-      Stems group word forms (e.g. <em>sequence</em>, <em>sequences</em>, <em>sequencing</em>) and are shown as their most frequent form; hover over a stem to see its forms.
+      Stems group word forms (e.g. <em>sequence</em>, <em>sequences</em>, <em>sequencing</em>) and are shown as their most frequent form; hover over a stem to see its forms. (Stems are used only on this page; the classifier itself uses whole words, which tested as accurate as stems.)
       All bars share one scale (0–<?= h(number_format($scaleMax, 2)) ?>), so lengths can be compared across COSIs.
     </p>
     <nav class="vocab-jump" aria-label="Jump to COSI">
