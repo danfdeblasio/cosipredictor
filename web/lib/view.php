@@ -10,7 +10,7 @@ function h(string $s): string
 
 function page_header(string $active, string $intro): void
 {
-    $tabs = ['index' => ['./', 'Abstract'], 'wikipedia' => ['wikipedia.php', 'Wikipedia article'], 'bulk' => ['bulk.php', 'Bulk CSV']];
+    $tabs = ['index' => ['./', 'Abstract'], 'wikipedia' => ['wikipedia.php', 'Wikipedia article'], 'bulk' => ['bulk.php', 'Bulk CSV'], 'terms' => ['terms.php', 'COSI vocabulary']];
     ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +19,7 @@ function page_header(string $active, string $intro): void
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>COSI Predictor</title>
 <meta name="description" content="Suggests which ISMB Community of Special Interest (COSI) best fits a submission or Wikipedia article.">
-<link rel="stylesheet" href="assets/style.css?v=5">
+<link rel="stylesheet" href="assets/style.css?v=6">
 </head>
 <body>
 <header class="site-header">

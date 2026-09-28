@@ -300,3 +300,37 @@ table.preview { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
 .footer-links a { color: var(--ink-2); text-underline-offset: 2px; }
 .footer-links a:hover { color: var(--accent-ink); }
 .footer-links span { margin: 0 6px; }
+
+/* COSI vocabulary page */
+.tabs { flex-wrap: wrap; }
+.vocab-intro { margin-bottom: 20px; }
+.vocab-intro .hint { max-width: 90ch; margin-bottom: 14px; }
+.vocab-jump { display: flex; flex-wrap: wrap; gap: 6px; }
+.vocab-jump a {
+  font-size: 0.82rem; font-weight: 600; text-decoration: none; color: var(--ink-2);
+  padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--page);
+}
+.vocab-jump a:hover { color: var(--accent-ink); border-color: var(--accent); }
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 20px; }
+.vocab-card { padding: 20px; scroll-margin-top: 16px; }
+.vocab-card h3 { margin: 0; font-size: 1.15rem; }
+.vocab-name { margin: 2px 0 0; color: var(--ink-2); font-size: 0.9rem; line-height: 1.35; }
+.vocab-n { margin: 2px 0 12px; color: var(--muted); font-size: 0.8rem; }
+.vocab-bars { list-style: none; margin: 0; padding: 0; }
+.vocab-bars li {
+  display: grid; grid-template-columns: 7.5rem 1fr 2.8rem; column-gap: 10px; align-items: center;
+  padding: 3px 4px; border-radius: 6px;
+}
+.vocab-bars li:hover { background: var(--wash); }
+.vocab-word { font-size: 0.88rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vocab-track {
+  position: relative; height: 16px;
+  background-image: linear-gradient(to right, var(--grid) 1px, transparent 1px);
+  border-left: 1px solid var(--baseline);
+  border-right: 1px solid var(--grid);
+}
+.vocab-bar {
+  position: absolute; left: 0; top: 3px; height: 10px; min-width: 2px;
+  border-radius: 0 4px 4px 0; background: var(--bar-strong);
+}
+.vocab-value { text-align: right; font-size: 0.8rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }

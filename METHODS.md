@@ -195,6 +195,12 @@ To place general topics in the COSI landscape, the tool also accepts English Wik
 
 Hidden maintenance categories are excluded. Disambiguation pages, identified by the `disambiguation` page property, are rejected, as are non-existent pages and articles from non-English editions. These articles are out of domain relative to the training data, and no labeled Wikipedia evaluation set exists. The resulting probabilities should therefore be read as indicative only.
 
+## Characteristic vocabulary of each COSI
+
+To summarize what distinguishes each COSI, we ranked word stems by their average TF-IDF weight within each COSI. This is separate from the classifier. For each submission, the title, keywords and abstract were concatenated and preprocessed as described above (lowercasing, diacritic removal, tokenization and stop-word removal). Each token was then reduced to its Porter stem (NLTK 3.9.2), which groups word forms such as *sequence*, *sequences* and *sequencing*.
+
+Stems occurring in at least five submissions and in no more than half of all submissions were weighted with the same TF-IDF scheme as the classifier (sublinear term frequency, smoothed IDF, $\ell_2$ normalization). A stem's score for a COSI was its mean weight over that COSI's submissions. It is high when the stem occurs in many of the COSI's submissions but is uncommon across ISMB overall. The ten highest-scoring stems per COSI are shown in the web service, each displayed as its most frequent word form.
+
 ## Implementation and deployment
 
 The model was trained and evaluated in Python 3.9.6 with scikit-learn 1.6.1, pandas 2.2.2 and NumPy 1.26.4. SPECTER2 embeddings were computed with transformers 4.57.6, adapters 1.3.0 and PyTorch 2.8.0.

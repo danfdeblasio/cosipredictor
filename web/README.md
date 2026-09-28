@@ -15,7 +15,7 @@ Upload the contents of this folder (including the dot files) to the document roo
 `cosipredictor.dandeblasio.com`:
 
 ```
-index.php  wikipedia.php  bulk.php  api.php  batch_api.php  config.php  .htaccess
+index.php  wikipedia.php  bulk.php  terms.php  api.php  batch_api.php  config.php  .htaccess
 assets/  lib/  data/
 ```
 
@@ -56,6 +56,11 @@ articles and non-English URLs get an error message.
 The browser parses the file and sends rows to `batch_api.php` in small batches (25 abstracts or 5
 articles per request), so large files never hit PHP's time limit and nothing is stored on the server.
 Limits: 10,000 abstracts or 1,000 articles per file (set in `bulk.php`).
+
+## COSI vocabulary page
+
+`terms.php` shows each COSI's top 10 word stems with a bar for each stem's mean TF-IDF score across that
+COSI's training submissions. It reads `data/top_terms.json`, produced by `top_terms.py` (see below).
 
 ## API
 
@@ -100,6 +105,7 @@ From `~/cosi_predictor`:
 ```
 python3 train.py <csv dirs/files...>          # writes model.joblib
 python3 export_model.py                       # writes web/data/cosi_model.sqlite
+python3 top_terms.py <csv dirs/files...>       # writes web/data/top_terms.json
 ```
 
 Then upload the new `data/cosi_model.sqlite`. If the COSI list changed, update `names` in `config.php`.

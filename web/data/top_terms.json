@@ -1,0 +1,2291 @@
+{
+ "generated": "2026-09-28",
+ "submissions": 9103,
+ "method": "mean TF-IDF of Porter stems over each COSI's submissions",
+ "cosis": {
+  "3DSIG": {
+   "submissions": 770,
+   "terms": [
+    {
+     "stem": "protein",
+     "word": "protein",
+     "forms": [
+      "protein",
+      "proteins"
+     ],
+     "score": 0.0921
+    },
+    {
+     "stem": "structur",
+     "word": "structure",
+     "forms": [
+      "structure",
+      "structural",
+      "structures",
+      "structured",
+      "structurally"
+     ],
+     "score": 0.0866
+    },
+    {
+     "stem": "predict",
+     "word": "prediction",
+     "forms": [
+      "prediction",
+      "predict",
+      "predicting",
+      "predictions",
+      "predicted"
+     ],
+     "score": 0.0424
+    },
+    {
+     "stem": "bind",
+     "word": "binding",
+     "forms": [
+      "binding",
+      "bind",
+      "binds",
+      "bindings"
+     ],
+     "score": 0.0418
+    },
+    {
+     "stem": "interact",
+     "word": "interactions",
+     "forms": [
+      "interactions",
+      "interaction",
+      "interactive",
+      "interacting",
+      "interact"
+     ],
+     "score": 0.0392
+    },
+    {
+     "stem": "residu",
+     "word": "residues",
+     "forms": [
+      "residues",
+      "residue",
+      "residual",
+      "residuals",
+      "residualization"
+     ],
+     "score": 0.0358
+    },
+    {
+     "stem": "function",
+     "word": "functional",
+     "forms": [
+      "functional",
+      "function",
+      "functions",
+      "functionally",
+      "functionality"
+     ],
+     "score": 0.0305
+    },
+    {
+     "stem": "molecular",
+     "word": "molecular",
+     "forms": [
+      "molecular"
+     ],
+     "score": 0.0297
+    },
+    {
+     "stem": "3d",
+     "word": "3d",
+     "forms": [
+      "3d"
+     ],
+     "score": 0.0291
+    },
+    {
+     "stem": "conform",
+     "word": "conformational",
+     "forms": [
+      "conformational",
+      "conformation",
+      "conformations",
+      "conformal",
+      "conform"
+     ],
+     "score": 0.0281
+    }
+   ]
+  },
+  "BioInfo-Core": {
+   "submissions": 70,
+   "terms": [
+    {
+     "stem": "core",
+     "word": "core",
+     "forms": [
+      "core",
+      "cores",
+      "coreness"
+     ],
+     "score": 0.0543
+    },
+    {
+     "stem": "bioinformat",
+     "word": "bioinformatics",
+     "forms": [
+      "bioinformatics",
+      "bioinformatic",
+      "bioinformatically"
+     ],
+     "score": 0.0456
+    },
+    {
+     "stem": "manag",
+     "word": "management",
+     "forms": [
+      "management",
+      "managing",
+      "manage",
+      "managed",
+      "manager"
+     ],
+     "score": 0.0448
+    },
+    {
+     "stem": "workflow",
+     "word": "workflow",
+     "forms": [
+      "workflow",
+      "workflows"
+     ],
+     "score": 0.0435
+    },
+    {
+     "stem": "pipelin",
+     "word": "pipeline",
+     "forms": [
+      "pipeline",
+      "pipelines",
+      "pipelining"
+     ],
+     "score": 0.0435
+    },
+    {
+     "stem": "analysi",
+     "word": "analysis",
+     "forms": [
+      "analysis"
+     ],
+     "score": 0.0402
+    },
+    {
+     "stem": "servic",
+     "word": "service",
+     "forms": [
+      "service",
+      "services"
+     ],
+     "score": 0.0376
+    },
+    {
+     "stem": "research",
+     "word": "research",
+     "forms": [
+      "research",
+      "researchers",
+      "researcher",
+      "researched",
+      "researches"
+     ],
+     "score": 0.0367
+    },
+    {
+     "stem": "platform",
+     "word": "platform",
+     "forms": [
+      "platform",
+      "platforms"
+     ],
+     "score": 0.0348
+    },
+    {
+     "stem": "sequenc",
+     "word": "sequencing",
+     "forms": [
+      "sequencing",
+      "sequence",
+      "sequences",
+      "sequenced",
+      "sequencer"
+     ],
+     "score": 0.0322
+    }
+   ]
+  },
+  "BioVis": {
+   "submissions": 206,
+   "terms": [
+    {
+     "stem": "visual",
+     "word": "visualization",
+     "forms": [
+      "visualization",
+      "visual",
+      "visualizations",
+      "visualize",
+      "visualizing"
+     ],
+     "score": 0.1357
+    },
+    {
+     "stem": "interact",
+     "word": "interactions",
+     "forms": [
+      "interactions",
+      "interaction",
+      "interactive",
+      "interacting",
+      "interact"
+     ],
+     "score": 0.0546
+    },
+    {
+     "stem": "user",
+     "word": "user",
+     "forms": [
+      "user",
+      "users"
+     ],
+     "score": 0.0468
+    },
+    {
+     "stem": "tool",
+     "word": "tools",
+     "forms": [
+      "tools",
+      "tool",
+      "tooling"
+     ],
+     "score": 0.0388
+    },
+    {
+     "stem": "explor",
+     "word": "explore",
+     "forms": [
+      "explore",
+      "exploration",
+      "exploring",
+      "explored",
+      "explores"
+     ],
+     "score": 0.0373
+    },
+    {
+     "stem": "analysi",
+     "word": "analysis",
+     "forms": [
+      "analysis"
+     ],
+     "score": 0.0368
+    },
+    {
+     "stem": "plot",
+     "word": "plots",
+     "forms": [
+      "plots",
+      "plot",
+      "plotting",
+      "plotted"
+     ],
+     "score": 0.035
+    },
+    {
+     "stem": "cell",
+     "word": "cell",
+     "forms": [
+      "cell",
+      "cells",
+      "celled"
+     ],
+     "score": 0.035
+    },
+    {
+     "stem": "web",
+     "word": "web",
+     "forms": [
+      "web",
+      "webs"
+     ],
+     "score": 0.0321
+    },
+    {
+     "stem": "visualis",
+     "word": "visualisation",
+     "forms": [
+      "visualisation",
+      "visualise",
+      "visualising",
+      "visualised",
+      "visualisations"
+     ],
+     "score": 0.0305
+    }
+   ]
+  },
+  "BOKR": {
+   "submissions": 163,
+   "terms": [
+    {
+     "stem": "ontolog",
+     "word": "ontology",
+     "forms": [
+      "ontology",
+      "ontologies",
+      "ontological",
+      "ontologically",
+      "ontologizing"
+     ],
+     "score": 0.1404
+    },
+    {
+     "stem": "knowledg",
+     "word": "knowledge",
+     "forms": [
+      "knowledge",
+      "knowledgeable"
+     ],
+     "score": 0.0631
+    },
+    {
+     "stem": "graph",
+     "word": "graph",
+     "forms": [
+      "graph",
+      "graphs",
+      "graphing"
+     ],
+     "score": 0.0494
+    },
+    {
+     "stem": "semant",
+     "word": "semantic",
+     "forms": [
+      "semantic",
+      "semantics",
+      "semantically"
+     ],
+     "score": 0.0474
+    },
+    {
+     "stem": "biomed",
+     "word": "biomedical",
+     "forms": [
+      "biomedical",
+      "biomedically"
+     ],
+     "score": 0.0389
+    },
+    {
+     "stem": "diseas",
+     "word": "disease",
+     "forms": [
+      "disease",
+      "diseases",
+      "diseased"
+     ],
+     "score": 0.0361
+    },
+    {
+     "stem": "bio",
+     "word": "bio",
+     "forms": [
+      "bio",
+      "bios"
+     ],
+     "score": 0.0321
+    },
+    {
+     "stem": "annot",
+     "word": "annotation",
+     "forms": [
+      "annotation",
+      "annotations",
+      "annotated",
+      "annotate",
+      "annotating"
+     ],
+     "score": 0.0312
+    },
+    {
+     "stem": "integr",
+     "word": "integration",
+     "forms": [
+      "integration",
+      "integrating",
+      "integrated",
+      "integrates",
+      "integrative"
+     ],
+     "score": 0.0299
+    },
+    {
+     "stem": "gene",
+     "word": "gene",
+     "forms": [
+      "gene",
+      "genes"
+     ],
+     "score": 0.0279
+    }
+   ]
+  },
+  "BOSC": {
+   "submissions": 449,
+   "terms": [
+    {
+     "stem": "open",
+     "word": "open",
+     "forms": [
+      "open",
+      "opens",
+      "opening",
+      "opened",
+      "openness"
+     ],
+     "score": 0.0554
+    },
+    {
+     "stem": "research",
+     "word": "research",
+     "forms": [
+      "research",
+      "researchers",
+      "researcher",
+      "researched",
+      "researches"
+     ],
+     "score": 0.0445
+    },
+    {
+     "stem": "workflow",
+     "word": "workflow",
+     "forms": [
+      "workflow",
+      "workflows"
+     ],
+     "score": 0.0427
+    },
+    {
+     "stem": "sourc",
+     "word": "source",
+     "forms": [
+      "source",
+      "sources",
+      "sourced",
+      "sourcing"
+     ],
+     "score": 0.042
+    },
+    {
+     "stem": "tool",
+     "word": "tools",
+     "forms": [
+      "tools",
+      "tool",
+      "tooling"
+     ],
+     "score": 0.0385
+    },
+    {
+     "stem": "commun",
+     "word": "community",
+     "forms": [
+      "community",
+      "communities",
+      "communication",
+      "communicate",
+      "communications"
+     ],
+     "score": 0.0344
+    },
+    {
+     "stem": "softwar",
+     "word": "software",
+     "forms": [
+      "software",
+      "softwares"
+     ],
+     "score": 0.0327
+    },
+    {
+     "stem": "genom",
+     "word": "genome",
+     "forms": [
+      "genome",
+      "genomic",
+      "genomes",
+      "genomics",
+      "genomically"
+     ],
+     "score": 0.0311
+    },
+    {
+     "stem": "standard",
+     "word": "standard",
+     "forms": [
+      "standard",
+      "standards",
+      "standardized",
+      "standardization",
+      "standardize"
+     ],
+     "score": 0.0309
+    },
+    {
+     "stem": "user",
+     "word": "user",
+     "forms": [
+      "user",
+      "users"
+     ],
+     "score": 0.0308
+    }
+   ]
+  },
+  "CAMDA": {
+   "submissions": 168,
+   "terms": [
+    {
+     "stem": "camda",
+     "word": "camda",
+     "forms": [
+      "camda"
+     ],
+     "score": 0.0839
+    },
+    {
+     "stem": "metagenom",
+     "word": "metagenomic",
+     "forms": [
+      "metagenomic",
+      "metagenomics",
+      "metagenome",
+      "metagenomes",
+      "metagenomical"
+     ],
+     "score": 0.0331
+    },
+    {
+     "stem": "dili",
+     "word": "dili",
+     "forms": [
+      "dili"
+     ],
+     "score": 0.0329
+    },
+    {
+     "stem": "predict",
+     "word": "prediction",
+     "forms": [
+      "prediction",
+      "predict",
+      "predicting",
+      "predictions",
+      "predicted"
+     ],
+     "score": 0.0318
+    },
+    {
+     "stem": "drug",
+     "word": "drug",
+     "forms": [
+      "drug",
+      "drugs",
+      "drugging",
+      "drugged"
+     ],
+     "score": 0.0317
+    },
+    {
+     "stem": "machin",
+     "word": "machine",
+     "forms": [
+      "machine",
+      "machines",
+      "machin"
+     ],
+     "score": 0.0287
+    },
+    {
+     "stem": "learn",
+     "word": "learning",
+     "forms": [
+      "learning",
+      "learn",
+      "learned",
+      "learns",
+      "learnings"
+     ],
+     "score": 0.0279
+    },
+    {
+     "stem": "gene",
+     "word": "gene",
+     "forms": [
+      "gene",
+      "genes"
+     ],
+     "score": 0.0274
+    },
+    {
+     "stem": "challeng",
+     "word": "challenge",
+     "forms": [
+      "challenge",
+      "challenges",
+      "challenging",
+      "challenged"
+     ],
+     "score": 0.0274
+    },
+    {
+     "stem": "sampl",
+     "word": "samples",
+     "forms": [
+      "samples",
+      "sample",
+      "sampling",
+      "sampled",
+      "samplings"
+     ],
+     "score": 0.0272
+    }
+   ]
+  },
+  "CompMS": {
+   "submissions": 249,
+   "terms": [
+    {
+     "stem": "mass",
+     "word": "mass",
+     "forms": [
+      "mass",
+      "masses",
+      "masse"
+     ],
+     "score": 0.1145
+    },
+    {
+     "stem": "spectrometri",
+     "word": "spectrometry",
+     "forms": [
+      "spectrometry"
+     ],
+     "score": 0.0988
+    },
+    {
+     "stem": "ms",
+     "word": "ms",
+     "forms": [
+      "ms"
+     ],
+     "score": 0.08
+    },
+    {
+     "stem": "proteom",
+     "word": "proteomics",
+     "forms": [
+      "proteomics",
+      "proteome",
+      "proteomic",
+      "proteomes",
+      "proteomeics"
+     ],
+     "score": 0.0777
+    },
+    {
+     "stem": "peptid",
+     "word": "peptide",
+     "forms": [
+      "peptide",
+      "peptides",
+      "peptidic"
+     ],
+     "score": 0.0708
+    },
+    {
+     "stem": "metabolom",
+     "word": "metabolomics",
+     "forms": [
+      "metabolomics",
+      "metabolome",
+      "metabolomic",
+      "metabolomes"
+     ],
+     "score": 0.0651
+    },
+    {
+     "stem": "spectra",
+     "word": "spectra",
+     "forms": [
+      "spectra"
+     ],
+     "score": 0.0507
+    },
+    {
+     "stem": "protein",
+     "word": "protein",
+     "forms": [
+      "protein",
+      "proteins"
+     ],
+     "score": 0.0397
+    },
+    {
+     "stem": "identif",
+     "word": "identification",
+     "forms": [
+      "identification",
+      "identifications",
+      "identifed",
+      "identifes"
+     ],
+     "score": 0.0366
+    },
+    {
+     "stem": "databas",
+     "word": "database",
+     "forms": [
+      "database",
+      "databases"
+     ],
+     "score": 0.0269
+    }
+   ]
+  },
+  "CSI": {
+   "submissions": 153,
+   "terms": [
+    {
+     "stem": "immun",
+     "word": "immune",
+     "forms": [
+      "immune",
+      "immunity",
+      "immunized",
+      "immunization",
+      "immunities"
+     ],
+     "score": 0.0798
+    },
+    {
+     "stem": "cell",
+     "word": "cell",
+     "forms": [
+      "cell",
+      "cells",
+      "celled"
+     ],
+     "score": 0.0777
+    },
+    {
+     "stem": "tcr",
+     "word": "tcr",
+     "forms": [
+      "tcr",
+      "tcrs"
+     ],
+     "score": 0.0375
+    },
+    {
+     "stem": "respons",
+     "word": "response",
+     "forms": [
+      "response",
+      "responses",
+      "responsible",
+      "responsive",
+      "responsiveness"
+     ],
+     "score": 0.0364
+    },
+    {
+     "stem": "singl",
+     "word": "single",
+     "forms": [
+      "single",
+      "singling",
+      "singled"
+     ],
+     "score": 0.0361
+    },
+    {
+     "stem": "antibodi",
+     "word": "antibody",
+     "forms": [
+      "antibody",
+      "antibodies"
+     ],
+     "score": 0.0353
+    },
+    {
+     "stem": "antigen",
+     "word": "antigen",
+     "forms": [
+      "antigen",
+      "antigens",
+      "antigenic",
+      "antigenicity",
+      "antigenically"
+     ],
+     "score": 0.0346
+    },
+    {
+     "stem": "predict",
+     "word": "prediction",
+     "forms": [
+      "prediction",
+      "predict",
+      "predicting",
+      "predictions",
+      "predicted"
+     ],
+     "score": 0.0339
+    },
+    {
+     "stem": "receptor",
+     "word": "receptor",
+     "forms": [
+      "receptor",
+      "receptors"
+     ],
+     "score": 0.0338
+    },
+    {
+     "stem": "immunolog",
+     "word": "immunology",
+     "forms": [
+      "immunology",
+      "immunological",
+      "immunologically",
+      "immunologic"
+     ],
+     "score": 0.0337
+    }
+   ]
+  },
+  "Education": {
+   "submissions": 164,
+   "terms": [
+    {
+     "stem": "educ",
+     "word": "education",
+     "forms": [
+      "education",
+      "educational",
+      "educators",
+      "educated",
+      "educate"
+     ],
+     "score": 0.1079
+    },
+    {
+     "stem": "cours",
+     "word": "course",
+     "forms": [
+      "course",
+      "courses"
+     ],
+     "score": 0.0894
+    },
+    {
+     "stem": "student",
+     "word": "students",
+     "forms": [
+      "students",
+      "student"
+     ],
+     "score": 0.0891
+    },
+    {
+     "stem": "bioinformat",
+     "word": "bioinformatics",
+     "forms": [
+      "bioinformatics",
+      "bioinformatic",
+      "bioinformatically"
+     ],
+     "score": 0.0819
+    },
+    {
+     "stem": "train",
+     "word": "training",
+     "forms": [
+      "training",
+      "trained",
+      "train",
+      "trains",
+      "trainings"
+     ],
+     "score": 0.0777
+    },
+    {
+     "stem": "scienc",
+     "word": "science",
+     "forms": [
+      "science",
+      "sciences"
+     ],
+     "score": 0.063
+    },
+    {
+     "stem": "skill",
+     "word": "skills",
+     "forms": [
+      "skills",
+      "skill",
+      "skilled"
+     ],
+     "score": 0.0604
+    },
+    {
+     "stem": "teach",
+     "word": "teaching",
+     "forms": [
+      "teaching",
+      "teach",
+      "teaches"
+     ],
+     "score": 0.0473
+    },
+    {
+     "stem": "research",
+     "word": "research",
+     "forms": [
+      "research",
+      "researchers",
+      "researcher",
+      "researched",
+      "researches"
+     ],
+     "score": 0.0431
+    },
+    {
+     "stem": "workshop",
+     "word": "workshop",
+     "forms": [
+      "workshop",
+      "workshops"
+     ],
+     "score": 0.0406
+    }
+   ]
+  },
+  "EvolCompGen": {
+   "submissions": 514,
+   "terms": [
+    {
+     "stem": "evolut",
+     "word": "evolution",
+     "forms": [
+      "evolution",
+      "evolutive",
+      "evolutions"
+     ],
+     "score": 0.0599
+    },
+    {
+     "stem": "genom",
+     "word": "genome",
+     "forms": [
+      "genome",
+      "genomic",
+      "genomes",
+      "genomics",
+      "genomically"
+     ],
+     "score": 0.0576
+    },
+    {
+     "stem": "tree",
+     "word": "tree",
+     "forms": [
+      "tree",
+      "trees"
+     ],
+     "score": 0.0553
+    },
+    {
+     "stem": "evolutionari",
+     "word": "evolutionary",
+     "forms": [
+      "evolutionary"
+     ],
+     "score": 0.0525
+    },
+    {
+     "stem": "phylogenet",
+     "word": "phylogenetic",
+     "forms": [
+      "phylogenetic",
+      "phylogenetics",
+      "phylogenetically"
+     ],
+     "score": 0.051
+    },
+    {
+     "stem": "gene",
+     "word": "gene",
+     "forms": [
+      "gene",
+      "genes"
+     ],
+     "score": 0.044
+    },
+    {
+     "stem": "speci",
+     "word": "species",
+     "forms": [
+      "species",
+      "specie"
+     ],
+     "score": 0.0429
+    },
+    {
+     "stem": "sequenc",
+     "word": "sequencing",
+     "forms": [
+      "sequencing",
+      "sequence",
+      "sequences",
+      "sequenced",
+      "sequencer"
+     ],
+     "score": 0.0369
+    },
+    {
+     "stem": "phylogeni",
+     "word": "phylogeny",
+     "forms": [
+      "phylogeny",
+      "phylogenies"
+     ],
+     "score": 0.0314
+    },
+    {
+     "stem": "infer",
+     "word": "inference",
+     "forms": [
+      "inference",
+      "infer",
+      "inferred",
+      "inferring",
+      "infers"
+     ],
+     "score": 0.0283
+    }
+   ]
+  },
+  "Function": {
+   "submissions": 336,
+   "terms": [
+    {
+     "stem": "protein",
+     "word": "protein",
+     "forms": [
+      "protein",
+      "proteins"
+     ],
+     "score": 0.092
+    },
+    {
+     "stem": "function",
+     "word": "functional",
+     "forms": [
+      "functional",
+      "function",
+      "functions",
+      "functionally",
+      "functionality"
+     ],
+     "score": 0.0841
+    },
+    {
+     "stem": "annot",
+     "word": "annotation",
+     "forms": [
+      "annotation",
+      "annotations",
+      "annotated",
+      "annotate",
+      "annotating"
+     ],
+     "score": 0.0642
+    },
+    {
+     "stem": "predict",
+     "word": "prediction",
+     "forms": [
+      "prediction",
+      "predict",
+      "predicting",
+      "predictions",
+      "predicted"
+     ],
+     "score": 0.0619
+    },
+    {
+     "stem": "sequenc",
+     "word": "sequencing",
+     "forms": [
+      "sequencing",
+      "sequence",
+      "sequences",
+      "sequenced",
+      "sequencer"
+     ],
+     "score": 0.0447
+    },
+    {
+     "stem": "gene",
+     "word": "gene",
+     "forms": [
+      "gene",
+      "genes"
+     ],
+     "score": 0.0355
+    },
+    {
+     "stem": "method",
+     "word": "methods",
+     "forms": [
+      "methods",
+      "method",
+      "methodical",
+      "methodically"
+     ],
+     "score": 0.0341
+    },
+    {
+     "stem": "learn",
+     "word": "learning",
+     "forms": [
+      "learning",
+      "learn",
+      "learned",
+      "learns",
+      "learnings"
+     ],
+     "score": 0.033
+    },
+    {
+     "stem": "base",
+     "word": "based",
+     "forms": [
+      "based",
+      "base",
+      "bases",
+      "basing"
+     ],
+     "score": 0.0312
+    },
+    {
+     "stem": "structur",
+     "word": "structure",
+     "forms": [
+      "structure",
+      "structural",
+      "structures",
+      "structured",
+      "structurally"
+     ],
+     "score": 0.031
+    }
+   ]
+  },
+  "HiTSeq": {
+   "submissions": 673,
+   "terms": [
+    {
+     "stem": "read",
+     "word": "read",
+     "forms": [
+      "read",
+      "reads",
+      "reading",
+      "readings"
+     ],
+     "score": 0.0644
+    },
+    {
+     "stem": "sequenc",
+     "word": "sequencing",
+     "forms": [
+      "sequencing",
+      "sequence",
+      "sequences",
+      "sequenced",
+      "sequencer"
+     ],
+     "score": 0.0553
+    },
+    {
+     "stem": "genom",
+     "word": "genome",
+     "forms": [
+      "genome",
+      "genomic",
+      "genomes",
+      "genomics",
+      "genomically"
+     ],
+     "score": 0.0461
+    },
+    {
+     "stem": "cell",
+     "word": "cell",
+     "forms": [
+      "cell",
+      "cells",
+      "celled"
+     ],
+     "score": 0.0399
+    },
+    {
+     "stem": "seq",
+     "word": "seq",
+     "forms": [
+      "seq",
+      "seqs"
+     ],
+     "score": 0.0378
+    },
+    {
+     "stem": "singl",
+     "word": "single",
+     "forms": [
+      "single",
+      "singling",
+      "singled"
+     ],
+     "score": 0.0335
+    },
+    {
+     "stem": "long",
+     "word": "long",
+     "forms": [
+      "long"
+     ],
+     "score": 0.0326
+    },
+    {
+     "stem": "rna",
+     "word": "rna",
+     "forms": [
+      "rna",
+      "rnas"
+     ],
+     "score": 0.0324
+    },
+    {
+     "stem": "method",
+     "word": "methods",
+     "forms": [
+      "methods",
+      "method",
+      "methodical",
+      "methodically"
+     ],
+     "score": 0.0307
+    },
+    {
+     "stem": "analysi",
+     "word": "analysis",
+     "forms": [
+      "analysis"
+     ],
+     "score": 0.0282
+    }
+   ]
+  },
+  "iRNA": {
+   "submissions": 482,
+   "terms": [
+    {
+     "stem": "rna",
+     "word": "rna",
+     "forms": [
+      "rna",
+      "rnas"
+     ],
+     "score": 0.103
+    },
+    {
+     "stem": "splice",
+     "word": "splicing",
+     "forms": [
+      "splicing",
+      "splice",
+      "spliced"
+     ],
+     "score": 0.0537
+    },
+    {
+     "stem": "transcript",
+     "word": "transcription",
+     "forms": [
+      "transcription",
+      "transcriptional",
+      "transcript",
+      "transcripts",
+      "transcriptionally"
+     ],
+     "score": 0.0423
+    },
+    {
+     "stem": "seq",
+     "word": "seq",
+     "forms": [
+      "seq",
+      "seqs"
+     ],
+     "score": 0.0409
+    },
+    {
+     "stem": "sequenc",
+     "word": "sequencing",
+     "forms": [
+      "sequencing",
+      "sequence",
+      "sequences",
+      "sequenced",
+      "sequencer"
+     ],
+     "score": 0.0388
+    },
+    {
+     "stem": "express",
+     "word": "expression",
+     "forms": [
+      "expression",
+      "expressed",
+      "expressions",
+      "express",
+      "expressing"
+     ],
+     "score": 0.0386
+    },
+    {
+     "stem": "gene",
+     "word": "gene",
+     "forms": [
+      "gene",
+      "genes"
+     ],
+     "score": 0.0377
+    },
+    {
+     "stem": "cell",
+     "word": "cell",
+     "forms": [
+      "cell",
+      "cells",
+      "celled"
+     ],
+     "score": 0.0336
+    },
+    {
+     "stem": "regul",
+     "word": "regulation",
+     "forms": [
+      "regulation",
+      "regulators",
+      "regulated",
+      "regulate",
+      "regulating"
+     ],
+     "score": 0.0331
+    },
+    {
+     "stem": "transcriptom",
+     "word": "transcriptomics",
+     "forms": [
+      "transcriptomics",
+      "transcriptomic",
+      "transcriptome",
+      "transcriptomes",
+      "transcriptomically"
+     ],
+     "score": 0.0328
+    }
+   ]
+  },
+  "MICROBIOME": {
+   "submissions": 475,
+   "terms": [
+    {
+     "stem": "microbiom",
+     "word": "microbiome",
+     "forms": [
+      "microbiome",
+      "microbiomes",
+      "microbiomics"
+     ],
+     "score": 0.096
+    },
+    {
+     "stem": "metagenom",
+     "word": "metagenomic",
+     "forms": [
+      "metagenomic",
+      "metagenomics",
+      "metagenome",
+      "metagenomes",
+      "metagenomical"
+     ],
+     "score": 0.0909
+    },
+    {
+     "stem": "microbi",
+     "word": "microbial",
+     "forms": [
+      "microbial",
+      "microbially"
+     ],
+     "score": 0.0695
+    },
+    {
+     "stem": "commun",
+     "word": "community",
+     "forms": [
+      "community",
+      "communities",
+      "communication",
+      "communicate",
+      "communications"
+     ],
+     "score": 0.0436
+    },
+    {
+     "stem": "gut",
+     "word": "gut",
+     "forms": [
+      "gut",
+      "guts"
+     ],
+     "score": 0.043
+    },
+    {
+     "stem": "taxonom",
+     "word": "taxonomic",
+     "forms": [
+      "taxonomic",
+      "taxonomically",
+      "taxonomical"
+     ],
+     "score": 0.0406
+    },
+    {
+     "stem": "sequenc",
+     "word": "sequencing",
+     "forms": [
+      "sequencing",
+      "sequence",
+      "sequences",
+      "sequenced",
+      "sequencer"
+     ],
+     "score": 0.0394
+    },
+    {
+     "stem": "genom",
+     "word": "genome",
+     "forms": [
+      "genome",
+      "genomic",
+      "genomes",
+      "genomics",
+      "genomically"
+     ],
+     "score": 0.0369
+    },
+    {
+     "stem": "assembl",
+     "word": "assembly",
+     "forms": [
+      "assembly",
+      "assemblies",
+      "assembled",
+      "assemble",
+      "assemblers"
+     ],
+     "score": 0.0347
+    },
+    {
+     "stem": "sampl",
+     "word": "samples",
+     "forms": [
+      "samples",
+      "sample",
+      "sampling",
+      "sampled",
+      "samplings"
+     ],
+     "score": 0.0337
+    }
+   ]
+  },
+  "MLCSB": {
+   "submissions": 1483,
+   "terms": [
+    {
+     "stem": "learn",
+     "word": "learning",
+     "forms": [
+      "learning",
+      "learn",
+      "learned",
+      "learns",
+      "learnings"
+     ],
+     "score": 0.0597
+    },
+    {
+     "stem": "predict",
+     "word": "prediction",
+     "forms": [
+      "prediction",
+      "predict",
+      "predicting",
+      "predictions",
+      "predicted"
+     ],
+     "score": 0.0461
+    },
+    {
+     "stem": "cell",
+     "word": "cell",
+     "forms": [
+      "cell",
+      "cells",
+      "celled"
+     ],
+     "score": 0.0409
+    },
+    {
+     "stem": "machin",
+     "word": "machine",
+     "forms": [
+      "machine",
+      "machines",
+      "machin"
+     ],
+     "score": 0.0347
+    },
+    {
+     "stem": "deep",
+     "word": "deep",
+     "forms": [
+      "deep"
+     ],
+     "score": 0.0345
+    },
+    {
+     "stem": "gene",
+     "word": "gene",
+     "forms": [
+      "gene",
+      "genes"
+     ],
+     "score": 0.032
+    },
+    {
+     "stem": "method",
+     "word": "methods",
+     "forms": [
+      "methods",
+      "method",
+      "methodical",
+      "methodically"
+     ],
+     "score": 0.0314
+    },
+    {
+     "stem": "train",
+     "word": "training",
+     "forms": [
+      "training",
+      "trained",
+      "train",
+      "trains",
+      "trainings"
+     ],
+     "score": 0.0311
+    },
+    {
+     "stem": "featur",
+     "word": "features",
+     "forms": [
+      "features",
+      "feature",
+      "featuring",
+      "featured",
+      "featurization"
+     ],
+     "score": 0.0288
+    },
+    {
+     "stem": "base",
+     "word": "based",
+     "forms": [
+      "based",
+      "base",
+      "bases",
+      "basing"
+     ],
+     "score": 0.0279
+    }
+   ]
+  },
+  "NetBio": {
+   "submissions": 528,
+   "terms": [
+    {
+     "stem": "network",
+     "word": "network",
+     "forms": [
+      "network",
+      "networks",
+      "networking"
+     ],
+     "score": 0.1083
+    },
+    {
+     "stem": "gene",
+     "word": "gene",
+     "forms": [
+      "gene",
+      "genes"
+     ],
+     "score": 0.0562
+    },
+    {
+     "stem": "interact",
+     "word": "interactions",
+     "forms": [
+      "interactions",
+      "interaction",
+      "interactive",
+      "interacting",
+      "interact"
+     ],
+     "score": 0.0516
+    },
+    {
+     "stem": "protein",
+     "word": "protein",
+     "forms": [
+      "protein",
+      "proteins"
+     ],
+     "score": 0.044
+    },
+    {
+     "stem": "biolog",
+     "word": "biological",
+     "forms": [
+      "biological",
+      "biology",
+      "biologically",
+      "biologic",
+      "biologics"
+     ],
+     "score": 0.0403
+    },
+    {
+     "stem": "diseas",
+     "word": "disease",
+     "forms": [
+      "disease",
+      "diseases",
+      "diseased"
+     ],
+     "score": 0.0387
+    },
+    {
+     "stem": "pathway",
+     "word": "pathways",
+     "forms": [
+      "pathways",
+      "pathway"
+     ],
+     "score": 0.0358
+    },
+    {
+     "stem": "cell",
+     "word": "cell",
+     "forms": [
+      "cell",
+      "cells",
+      "celled"
+     ],
+     "score": 0.0324
+    },
+    {
+     "stem": "analysi",
+     "word": "analysis",
+     "forms": [
+      "analysis"
+     ],
+     "score": 0.0318
+    },
+    {
+     "stem": "function",
+     "word": "functional",
+     "forms": [
+      "functional",
+      "function",
+      "functions",
+      "functionally",
+      "functionality"
+     ],
+     "score": 0.0318
+    }
+   ]
+  },
+  "RegSys": {
+   "submissions": 629,
+   "terms": [
+    {
+     "stem": "cell",
+     "word": "cell",
+     "forms": [
+      "cell",
+      "cells",
+      "celled"
+     ],
+     "score": 0.0663
+    },
+    {
+     "stem": "regulatori",
+     "word": "regulatory",
+     "forms": [
+      "regulatory"
+     ],
+     "score": 0.0651
+    },
+    {
+     "stem": "gene",
+     "word": "gene",
+     "forms": [
+      "gene",
+      "genes"
+     ],
+     "score": 0.0593
+    },
+    {
+     "stem": "transcript",
+     "word": "transcription",
+     "forms": [
+      "transcription",
+      "transcriptional",
+      "transcript",
+      "transcripts",
+      "transcriptionally"
+     ],
+     "score": 0.0539
+    },
+    {
+     "stem": "chromatin",
+     "word": "chromatin",
+     "forms": [
+      "chromatin"
+     ],
+     "score": 0.0502
+    },
+    {
+     "stem": "express",
+     "word": "expression",
+     "forms": [
+      "expression",
+      "expressed",
+      "expressions",
+      "express",
+      "expressing"
+     ],
+     "score": 0.0488
+    },
+    {
+     "stem": "regul",
+     "word": "regulation",
+     "forms": [
+      "regulation",
+      "regulators",
+      "regulated",
+      "regulate",
+      "regulating"
+     ],
+     "score": 0.0483
+    },
+    {
+     "stem": "tf",
+     "word": "tf",
+     "forms": [
+      "tf",
+      "tfs"
+     ],
+     "score": 0.0444
+    },
+    {
+     "stem": "seq",
+     "word": "seq",
+     "forms": [
+      "seq",
+      "seqs"
+     ],
+     "score": 0.0427
+    },
+    {
+     "stem": "factor",
+     "word": "factors",
+     "forms": [
+      "factors",
+      "factor",
+      "factorization",
+      "factorize",
+      "factorizing"
+     ],
+     "score": 0.0421
+    }
+   ]
+  },
+  "SysMod": {
+   "submissions": 417,
+   "terms": [
+    {
+     "stem": "cell",
+     "word": "cell",
+     "forms": [
+      "cell",
+      "cells",
+      "celled"
+     ],
+     "score": 0.0547
+    },
+    {
+     "stem": "metabol",
+     "word": "metabolic",
+     "forms": [
+      "metabolic",
+      "metabolism",
+      "metabolically",
+      "metabolizing",
+      "metabolisms"
+     ],
+     "score": 0.0533
+    },
+    {
+     "stem": "dynam",
+     "word": "dynamics",
+     "forms": [
+      "dynamics",
+      "dynamic",
+      "dynamical",
+      "dynamically",
+      "dynamicity"
+     ],
+     "score": 0.0362
+    },
+    {
+     "stem": "network",
+     "word": "network",
+     "forms": [
+      "network",
+      "networks",
+      "networking"
+     ],
+     "score": 0.0344
+    },
+    {
+     "stem": "simul",
+     "word": "simulation",
+     "forms": [
+      "simulation",
+      "simulations",
+      "simulated",
+      "simulate",
+      "simulating"
+     ],
+     "score": 0.0329
+    },
+    {
+     "stem": "system",
+     "word": "systems",
+     "forms": [
+      "systems",
+      "systemic",
+      "systemically",
+      "systemics"
+     ],
+     "score": 0.0324
+    },
+    {
+     "stem": "biolog",
+     "word": "biological",
+     "forms": [
+      "biological",
+      "biology",
+      "biologically",
+      "biologic",
+      "biologics"
+     ],
+     "score": 0.0285
+    },
+    {
+     "stem": "reaction",
+     "word": "reactions",
+     "forms": [
+      "reactions",
+      "reaction"
+     ],
+     "score": 0.0255
+    },
+    {
+     "stem": "flux",
+     "word": "flux",
+     "forms": [
+      "flux",
+      "fluxes"
+     ],
+     "score": 0.025
+    },
+    {
+     "stem": "gene",
+     "word": "gene",
+     "forms": [
+      "gene",
+      "genes"
+     ],
+     "score": 0.0243
+    }
+   ]
+  },
+  "TextMining": {
+   "submissions": 157,
+   "terms": [
+    {
+     "stem": "text",
+     "word": "text",
+     "forms": [
+      "text",
+      "texts"
+     ],
+     "score": 0.1039
+    },
+    {
+     "stem": "mine",
+     "word": "mining",
+     "forms": [
+      "mining",
+      "mined",
+      "mines"
+     ],
+     "score": 0.0733
+    },
+    {
+     "stem": "languag",
+     "word": "language",
+     "forms": [
+      "language",
+      "languages"
+     ],
+     "score": 0.0684
+    },
+    {
+     "stem": "biomed",
+     "word": "biomedical",
+     "forms": [
+      "biomedical",
+      "biomedically"
+     ],
+     "score": 0.0672
+    },
+    {
+     "stem": "literatur",
+     "word": "literature",
+     "forms": [
+      "literature"
+     ],
+     "score": 0.0599
+    },
+    {
+     "stem": "extract",
+     "word": "extraction",
+     "forms": [
+      "extraction",
+      "extract",
+      "extracted",
+      "extracting",
+      "extracts"
+     ],
+     "score": 0.0555
+    },
+    {
+     "stem": "entiti",
+     "word": "entities",
+     "forms": [
+      "entities",
+      "entity"
+     ],
+     "score": 0.0524
+    },
+    {
+     "stem": "llm",
+     "word": "llms",
+     "forms": [
+      "llms",
+      "llm"
+     ],
+     "score": 0.0428
+    },
+    {
+     "stem": "pubm",
+     "word": "pubmed",
+     "forms": [
+      "pubmed"
+     ],
+     "score": 0.0425
+    },
+    {
+     "stem": "nlp",
+     "word": "nlp",
+     "forms": [
+      "nlp",
+      "nlps"
+     ],
+     "score": 0.037
+    }
+   ]
+  },
+  "TransMed": {
+   "submissions": 648,
+   "terms": [
+    {
+     "stem": "patient",
+     "word": "patients",
+     "forms": [
+      "patients",
+      "patient"
+     ],
+     "score": 0.0568
+    },
+    {
+     "stem": "cancer",
+     "word": "cancer",
+     "forms": [
+      "cancer",
+      "cancers",
+      "cancerous"
+     ],
+     "score": 0.0497
+    },
+    {
+     "stem": "clinic",
+     "word": "clinical",
+     "forms": [
+      "clinical",
+      "clinically",
+      "clinic",
+      "clinics",
+      "clinicable"
+     ],
+     "score": 0.0438
+    },
+    {
+     "stem": "diseas",
+     "word": "disease",
+     "forms": [
+      "disease",
+      "diseases",
+      "diseased"
+     ],
+     "score": 0.0374
+    },
+    {
+     "stem": "drug",
+     "word": "drug",
+     "forms": [
+      "drug",
+      "drugs",
+      "drugging",
+      "drugged"
+     ],
+     "score": 0.0365
+    },
+    {
+     "stem": "cell",
+     "word": "cell",
+     "forms": [
+      "cell",
+      "cells",
+      "celled"
+     ],
+     "score": 0.0333
+    },
+    {
+     "stem": "tumor",
+     "word": "tumor",
+     "forms": [
+      "tumor",
+      "tumors",
+      "tumoral"
+     ],
+     "score": 0.0316
+    },
+    {
+     "stem": "gene",
+     "word": "gene",
+     "forms": [
+      "gene",
+      "genes"
+     ],
+     "score": 0.0307
+    },
+    {
+     "stem": "treatment",
+     "word": "treatment",
+     "forms": [
+      "treatment",
+      "treatments"
+     ],
+     "score": 0.0305
+    },
+    {
+     "stem": "predict",
+     "word": "prediction",
+     "forms": [
+      "prediction",
+      "predict",
+      "predicting",
+      "predictions",
+      "predicted"
+     ],
+     "score": 0.0282
+    }
+   ]
+  },
+  "VarI": {
+   "submissions": 369,
+   "terms": [
+    {
+     "stem": "variant",
+     "word": "variants",
+     "forms": [
+      "variants",
+      "variant"
+     ],
+     "score": 0.1177
+    },
+    {
+     "stem": "genet",
+     "word": "genetic",
+     "forms": [
+      "genetic",
+      "genetics",
+      "genetically",
+      "genet"
+     ],
+     "score": 0.0544
+    },
+    {
+     "stem": "mutat",
+     "word": "mutations",
+     "forms": [
+      "mutations",
+      "mutation",
+      "mutational",
+      "mutated",
+      "mutate"
+     ],
+     "score": 0.0477
+    },
+    {
+     "stem": "genom",
+     "word": "genome",
+     "forms": [
+      "genome",
+      "genomic",
+      "genomes",
+      "genomics",
+      "genomically"
+     ],
+     "score": 0.0448
+    },
+    {
+     "stem": "diseas",
+     "word": "disease",
+     "forms": [
+      "disease",
+      "diseases",
+      "diseased"
+     ],
+     "score": 0.0428
+    },
+    {
+     "stem": "effect",
+     "word": "effects",
+     "forms": [
+      "effects",
+      "effect",
+      "effective",
+      "effectively",
+      "effectiveness"
+     ],
+     "score": 0.0363
+    },
+    {
+     "stem": "associ",
+     "word": "associated",
+     "forms": [
+      "associated",
+      "association",
+      "associations",
+      "associating",
+      "associate"
+     ],
+     "score": 0.0362
+    },
+    {
+     "stem": "pathogen",
+     "word": "pathogenic",
+     "forms": [
+      "pathogenic",
+      "pathogen",
+      "pathogens",
+      "pathogenicity",
+      "pathogene"
+     ],
+     "score": 0.0359
+    },
+    {
+     "stem": "gene",
+     "word": "gene",
+     "forms": [
+      "gene",
+      "genes"
+     ],
+     "score": 0.0344
+    },
+    {
+     "stem": "protein",
+     "word": "protein",
+     "forms": [
+      "protein",
+      "proteins"
+     ],
+     "score": 0.0341
+    }
+   ]
+  }
+ }
+}
