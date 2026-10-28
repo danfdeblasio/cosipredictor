@@ -18,7 +18,12 @@ python train.py "../data/ISCB accepted submissions" --holdout ISMB2026 --out ../
 
 The repo's `model.joblib` was not modified. Log: [`results/repro_train_log.txt`](results/repro_train_log.txt).
 
-Data filtering matches METHODS.md exactly:
+Data filtering matches METHODS.md exactly. Counts per step come from `experiments/repro_counts.py` (same steps as `train.load_training_data`), which writes [`results/repro_counts.md`](results/repro_counts.md):
+
+```
+python experiments/repro_counts.py "../data/ISCB accepted submissions"
+```
+
 
 | Records | Removed | Remaining |
 |---|---|---|
