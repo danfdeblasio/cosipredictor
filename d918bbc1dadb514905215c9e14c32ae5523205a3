@@ -1,0 +1,7 @@
+vt.idd:task: T002
+vt.idd:domain: config
+vt.idd:agents: claude
+vt.idd:files: requirements-dev.txt
+vt.idd:satisfies: full
+vt.idd:wave: 0
+vt.idd:timestamp: 2026-11-04T12:27:03-06:00
