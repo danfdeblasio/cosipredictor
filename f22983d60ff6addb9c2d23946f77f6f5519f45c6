@@ -6,3 +6,11 @@ vt.idd:tdd: red=test_repro_counts_missing_decision_column failed (KeyError), gre
 vt.idd:satisfies: full
 vt.idd:wave: 1
 vt.idd:timestamp: 2026-11-04T12:28:05-06:00
+
+vt.idd:task: T005
+vt.idd:domain: backend
+vt.idd:agents: claude
+vt.idd:files: experiments/results/repro_counts.md
+vt.idd:satisfies: full (Re-run on 21 real CSVs: byte-identical, no commit needed)
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-11-04T12:28:27-06:00
