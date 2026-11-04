@@ -1,6 +1,6 @@
 """Count the records left after each training-data filter, to check them against METHODS.md.
 
-Applies the same steps, in the same order, as train.load_training_data:
+Uses common.filter_training_data, the same filter as train.load_training_data:
     1. all CSV rows (files without a `trackname` column are skipped, as in common.load_csvs)
     2. remove rows whose decision contains "reject"
     3. remove rows whose track maps to no COSI
@@ -17,22 +17,19 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
-from common import load_csvs, make_normalizer, prepare_text, read_cosi_list  # noqa: E402
+from common import filter_training_data, load_csvs, read_cosi_list  # noqa: E402
 
 METHODS_MD = [14678, 14405, 9336, 9103]  # remaining after each step, as reported in METHODS.md
 
 
+# Row labels for the report, one per step of common.filter_training_data.
+STEP_LABELS = ["All CSV rows", "Rejected submissions", "Tracks that are not COSIs",
+               "Duplicates (same title and COSI)"]
+
+
 def filter_counts(paths, cosis):
-    df = load_csvs([os.path.expanduser(p) for p in paths])
-    steps = [("All CSV rows", len(df))]
-    df = df[~df["decision"].fillna("").str.contains("reject", case=False)]
-    steps.append(("Rejected submissions", len(df)))
-    df = df.assign(label=df["trackname"].map(make_normalizer(cosis)))
-    df = prepare_text(df[df["label"].notna()])
-    steps.append(("Tracks that are not COSIs", len(df)))
-    df = df.drop_duplicates(subset=["title", "label"])
-    steps.append(("Duplicates (same title and COSI)", len(df)))
-    return steps
+    _, stages = filter_training_data(load_csvs([os.path.expanduser(p) for p in paths]), cosis)
+    return [(label, n) for label, (_, n) in zip(STEP_LABELS, stages, strict=True)]
 
 
 def main():
