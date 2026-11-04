@@ -14,3 +14,11 @@ vt.idd:files: experiments/results/repro_counts.md
 vt.idd:satisfies: full (Re-run on 21 real CSVs: byte-identical, no commit needed)
 vt.idd:wave: 2
 vt.idd:timestamp: 2026-11-04T12:28:27-06:00
+
+vt.idd:task: T006
+vt.idd:domain: backend
+vt.idd:agents: claude
+vt.idd:files: train.py
+vt.idd:satisfies: full (Real data: 9103 records; top-1/3/5 0.650/0.913/0.957; macro F1 0.63; log identical to #9 baseline except the model output path)
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-11-04T12:29:38-06:00
