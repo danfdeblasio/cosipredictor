@@ -44,6 +44,8 @@ Not re-run: bootstrap confidence intervals, calibration, SPECTER2 and stemming c
 
 ![Per-COSI F1 on the ISMB 2026 hold-out](results/per_cosi_f1.png)
 
+The chart plots the per-COSI F1 column of the classification report in [`results/repro_train_log.txt`](results/repro_train_log.txt).
+
 BioInfo-Core (7 test submissions) is never predicted correctly; CAMDA has precision 1.00 but recall 0.21.
 
 ## 2. Independent evaluation set
