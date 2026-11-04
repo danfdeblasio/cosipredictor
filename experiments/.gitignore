@@ -1,2 +1,2 @@
-﻿# Contains submission titles; keep out of git
-results/eval_set_manifest.csv
+# Contains submission titles; keep out of git (any output folder under experiments/)
+**/eval_set_manifest.csv
