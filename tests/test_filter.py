@@ -63,3 +63,30 @@ def test_missing_decision_column_is_not_rejected(fixture_dir, cosis):
     out, stages = filter_training_data(df, cosis)
     assert list(out["title"]) == ["Microbiome network inference"]
     assert stages[1] == ("after reject removal", 1)
+
+
+def _repro_counts():
+    import importlib.util
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "experiments", "repro_counts.py")
+    spec = importlib.util.spec_from_file_location("repro_counts", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_repro_counts_matches_shared_filter(fixture_dir, cosis):
+    # repro_counts.py reports the same numbers as the shared filter, under its own row labels.
+    steps = _repro_counts().filter_counts([fixture_dir], cosis)
+    _, stages = filter_training_data(load_csvs([fixture_dir]), cosis)
+    assert [n for _, n in steps] == [n for _, n in stages]
+    assert [name for name, _ in steps] == [
+        "All CSV rows",
+        "Rejected submissions",
+        "Tracks that are not COSIs",
+        "Duplicates (same title and COSI)",
+    ]
+
+
+def test_repro_counts_missing_decision_column(fixture_dir, cosis):
+    steps = _repro_counts().filter_counts([os.path.join(fixture_dir, "no_decision.csv")], cosis)
+    assert [n for _, n in steps] == [1, 1, 1, 1]
