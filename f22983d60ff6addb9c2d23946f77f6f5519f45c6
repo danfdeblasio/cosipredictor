@@ -1,0 +1,8 @@
+vt.idd:task: T004
+vt.idd:domain: backend
+vt.idd:agents: claude(coder,self-review)
+vt.idd:files: experiments/repro_counts.py
+vt.idd:tdd: red=test_repro_counts_missing_decision_column failed (KeyError), green=6 passed
+vt.idd:satisfies: full
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-11-04T12:28:05-06:00
