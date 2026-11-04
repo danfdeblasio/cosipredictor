@@ -60,6 +60,25 @@ def load_csvs(paths):
     return pd.concat(frames, ignore_index=True)
 
 
+def filter_training_data(df, cosis):
+    """Apply the training filters and return (filtered frame, [(stage, row count), ...]).
+
+    Order matters and matches what train.py has always done: drop rejected submissions, map track
+    names to COSIs and drop unmapped rows, fill text fields, then drop rows with the same exact title
+    and COSI. A missing `decision` column counts as "not rejected".
+    """
+    stages = [("loaded", len(df))]
+    decision = df["decision"] if "decision" in df.columns else pd.Series("", index=df.index)
+    df = df[~decision.fillna("").astype(str).str.contains("reject", case=False)].copy()
+    stages.append(("after reject removal", len(df)))
+    df["label"] = df["trackname"].map(make_normalizer(cosis))
+    df = prepare_text(df[df["label"].notna()])
+    stages.append(("after unmapped removal", len(df)))
+    df = df.drop_duplicates(subset=["title", "label"])
+    stages.append(("after duplicate removal", len(df)))
+    return df, stages
+
+
 def prepare_text(df):
     """Fill missing text fields; turn newline-separated keywords into '; '-joined phrases."""
     out = df.copy()
