@@ -1,0 +1,8 @@
+vt.idd:task: T001
+vt.idd:domain: backend
+vt.idd:agents: claude(cherry-pick ebef7d3)
+vt.idd:files: common.py,train.py,tests/conftest.py,tests/test_filter.py,tests/fixtures
+vt.idd:tdd: red=collection error: filter_training_data missing on pre-refactor code, green=4 passed
+vt.idd:satisfies: full
+vt.idd:wave: 0
+vt.idd:timestamp: 2026-11-04T12:26:52-06:00
