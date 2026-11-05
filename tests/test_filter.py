@@ -6,14 +6,17 @@ change what the model is trained on (issue #2, FR-011).
 """
 import os
 
+import numpy as np
 import pandas as pd
 
 from common import filter_training_data, load_csvs, make_normalizer, prepare_text
 from train import load_training_data
 
 # Expected (title, label) pairs on the fixtures, worked out by hand:
-# 15 rows loaded (no_trackname.csv is skipped) -> 2 rejects removed -> 3 unmapped tracks removed
-# (General Computational Biology, 2x GLBIO General Track) -> 1 exact duplicate removed -> 9.
+# 17 rows loaded (no_trackname.csv is skipped) -> 2 rejects removed -> 3 unmapped tracks removed
+# (General Computational Biology, 2x GLBIO General Track) -> 2 duplicates removed -> 10.
+# The duplicates are one exact title pair and two BioVis rows with no title: blank titles count as
+# the same title "", so those two collapse into one row (as train.py has always done).
 EXPECTED = {
     ("Protein folding with graphs", "3DSIG"),
     ("Deep learning for gene regulation", "MLCSB"),
@@ -24,6 +27,7 @@ EXPECTED = {
     ("Small RNA regulation", "iRNA"),
     ("Deep Learning for Gene Regulation!", "MLCSB"),
     ("Microbiome network inference", "MLCSB"),
+    ("", "BioVis"),
 }
 
 
@@ -50,10 +54,10 @@ def test_matches_legacy_frame(fixture_dir, cosis):
 def test_stage_counts(fixture_dir, cosis):
     _, stages = filter_training_data(load_csvs([fixture_dir]), cosis)
     assert stages == [
-        ("loaded", 15),
-        ("after reject removal", 13),
-        ("after unmapped removal", 10),
-        ("after duplicate removal", 9),
+        ("loaded", 17),
+        ("after reject removal", 15),
+        ("after unmapped removal", 12),
+        ("after duplicate removal", 10),
     ]
 
 
@@ -90,3 +94,21 @@ def test_repro_counts_matches_shared_filter(fixture_dir, cosis):
 def test_repro_counts_missing_decision_column(fixture_dir, cosis):
     steps = _repro_counts().filter_counts([os.path.join(fixture_dir, "no_decision.csv")], cosis)
     assert [n for _, n in steps] == [1, 1, 1, 1]
+
+
+def test_blank_titles_with_same_cosi_collapse(fixture_dir, cosis):
+    df = load_training_data([fixture_dir], cosis)
+    blank = df[df["title"] == ""]
+    assert list(blank["label"]) == ["BioVis"]
+
+
+def test_non_string_decision_values_are_not_rejected(cosis):
+    # The shared filter reads `decision` as text, so numbers or blanks never raise and never count as rejected.
+    df = pd.DataFrame({
+        "title": ["Numeric decision row", "Blank decision row"],
+        "trackname": ["MLCSB", "3DSIG"],
+        "decision": [1.0, np.nan],
+    })
+    out, stages = filter_training_data(df, cosis)
+    assert len(out) == 2
+    assert stages[1] == ("after reject removal", 2)
