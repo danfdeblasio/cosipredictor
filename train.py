@@ -58,6 +58,8 @@ def build_pipeline(stem=False):
 
 
 def load_training_data(paths, cosis):
+    """Load the CSVs and return the training frame. The filter steps and their order live in
+    common.filter_training_data; this wrapper drops its step counts."""
     df = load_csvs([os.path.expanduser(p) for p in paths])
     return filter_training_data(df, cosis)[0]
 

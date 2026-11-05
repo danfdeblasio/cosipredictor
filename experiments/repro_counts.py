@@ -44,7 +44,7 @@ def main():
              "Same steps and order as `train.load_training_data`.", "",
              "| Step | Removed | Remaining | METHODS.md | Match |", "|---|---|---|---|---|"]
     prev = None
-    for (name, n), expected in zip(steps, METHODS_MD):
+    for (name, n), expected in zip(steps, METHODS_MD, strict=True):
         removed = "" if prev is None else f"−{prev - n:,}"
         lines.append(f"| {name} | {removed} | {n:,} | {expected:,} | {'yes' if n == expected else 'NO'} |")
         prev = n
