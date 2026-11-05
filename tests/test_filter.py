@@ -15,8 +15,9 @@ from train import load_training_data
 # Expected (title, label) pairs on the fixtures, worked out by hand:
 # 17 rows loaded (no_trackname.csv is skipped) -> 2 rejects removed -> 3 unmapped tracks removed
 # (General Computational Biology, 2x GLBIO General Track) -> 2 duplicates removed -> 10.
-# The duplicates are one exact title pair and two BioVis rows with no title: blank titles count as
-# the same title "", so those two collapse into one row (as train.py has always done).
+# The duplicates are one exact title pair and two BioVis rows with no title. Blank title cells are
+# the same title for deduplication, so those two collapse into one row (as train.py has always done).
+# This pins the result; the step order itself is guarded by test_matches_legacy_frame.
 EXPECTED = {
     ("Protein folding with graphs", "3DSIG"),
     ("Deep learning for gene regulation", "MLCSB"),
