@@ -1,0 +1,7 @@
+# Small COSI list for the synthetic fixtures. CAMDA has no examples on purpose.
+3DSIG
+MLCSB
+BioVis
+TextMining
+iRNA
+CAMDA

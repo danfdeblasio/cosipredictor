@@ -1,0 +1,15 @@
+title,authors,trackname,keywords,decision,abstract,conference
+Protein folding with graphs,Author A,3DSIG,protein; structure,accept talk,We fold proteins with graph networks.,ISMB2025
+Deep learning for gene regulation,Author B,MLCSB,deep learning,accept poster,Neural networks for regulatory genomics.,ISMB2025
+Rejected structure paper,Author C,3DSIG,structure,reject,This one was not accepted.,ISMB2025
+Visualizing single-cell atlases,Author D,BioVis,visualization,accept talk,Interactive plots for cell atlases.,ISMB2025
+Mining biomedical literature,Author E,Text Mining COSI,,accept talk,Text mining of PubMed abstracts.,ISMB2025
+Mining biomedical literature,Author E,Text Mining COSI,,accept poster,Text mining of PubMed abstracts.,ISMB2025
+General track talk,Author F,General Computational Biology,misc,accept talk,A talk in the general track.,ISMB2026
+Protein language models,Author G,3DSIG,protein,accept talk,Language models for protein structure.,ISMB2026
+Protein language models,Author G,MLCSB,protein,accept talk,Language models for protein structure.,ISMB2026
+Small RNA regulation,Author H,RNA COSI,rna,accept poster,,ISMB2026
+Deep Learning for Gene Regulation!,Author B,MLCSB,deep learning,accept talk,Neural networks for regulation again.,ISMB2026
+Withdrawn talk,Author I,MLCSB,,Reject,,ISMB2026
+,Author L,BioVis,visualization,accept poster,A poster whose title was left blank.,ISMB2026
+,Author M,BioVis,plots,accept talk,Another entry with no title.,ISMB2026

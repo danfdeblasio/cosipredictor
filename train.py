@@ -15,7 +15,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, top_k_accuracy_score
 from sklearn.pipeline import Pipeline
 
-from common import load_csvs, make_normalizer, prepare_text, read_cosi_list
+from common import filter_training_data, load_csvs, read_cosi_list
 
 
 class StemmedAnalyzer:
@@ -58,11 +58,10 @@ def build_pipeline(stem=False):
 
 
 def load_training_data(paths, cosis):
+    """Load the CSVs and return the training frame. The filter steps and their order live in
+    common.filter_training_data; this wrapper drops its step counts."""
     df = load_csvs([os.path.expanduser(p) for p in paths])
-    df = df[~df["decision"].fillna("").str.contains("reject", case=False)]
-    df["label"] = df["trackname"].map(make_normalizer(cosis))
-    df = prepare_text(df[df["label"].notna()])
-    return df.drop_duplicates(subset=["title", "label"])
+    return filter_training_data(df, cosis)[0]
 
 
 def main():
