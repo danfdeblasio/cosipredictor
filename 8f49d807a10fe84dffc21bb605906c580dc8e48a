@@ -1,0 +1,8 @@
+vt.idd:task: T001
+vt.idd:domain: backend
+vt.idd:agents: claude(tester)
+vt.idd:files: tests/test_explore.py
+vt.idd:tdd: red=8 failed (AttributeError / missing section), 24 passed, green=pending T002-T003
+vt.idd:satisfies: partial (GREEN in wave 1)
+vt.idd:wave: 0
+vt.idd:timestamp: 2026-11-09T16:19:07-06:00
