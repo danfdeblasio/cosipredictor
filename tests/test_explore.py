@@ -253,6 +253,7 @@ def test_no_ismb_label_is_noted(fixture_dir, tmp_path):
     report = run_args(fixture_dir, tmp_path, str(data))
     assert "No ISMB conference found" in report
     assert "### No training rows at all" in report
+    assert "### No training rows in" not in report  # the latest-conference list is omitted
 
 
 def test_latest_rejects_total_and_unknown(fixture_dir, tmp_path):
