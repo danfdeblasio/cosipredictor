@@ -15,3 +15,11 @@ vt.idd:tdd: red=8 failed in T001, green=32 passed (-W error)
 vt.idd:satisfies: full (helpers and section landed in one commit)
 vt.idd:wave: 1
 vt.idd:timestamp: 2026-11-09T16:19:57-06:00
+
+vt.idd:task: T004
+vt.idd:domain: backend
+vt.idd:agents: claude
+vt.idd:files: explore.py
+vt.idd:satisfies: full (Real data: grand total 9103, latest ISMB2026 (default), all 21 COSIs have ISMB2026 rows (both lists None), 0 of 56,437 text values in report)
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-11-09T16:20:37-06:00
