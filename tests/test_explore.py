@@ -290,3 +290,13 @@ def test_empty_training_set(fixture_dir, cosis):
     assert never == list(cosis) and not_latest == []
     lines = explore.cosi_section(empty, cosis)
     assert "No ISMB conference found; pass --latest to choose one." in lines
+
+
+def test_total_is_a_reserved_name(fixture_dir, cosis):
+    rows = _training_rows(fixture_dir, cosis)
+    with pytest.raises(SystemExit) as exc:
+        explore.cosi_conference_table(rows, cosis + ["Total"])
+    assert "reserved" in str(exc.value.code)
+    renamed = rows.assign(conference=rows["conference"].replace({"ISMB2025": "Total"}))
+    with pytest.raises(SystemExit):
+        explore.cosi_conference_table(renamed, cosis)

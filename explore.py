@@ -98,6 +98,10 @@ def latest_ismb(labels):
 def cosi_conference_table(train_rows, cosis):
     """Training rows per COSI (rows, in cosis.txt order, zeros included) x conference (columns, by year),
     with a Total row and column. `train_rows` is the filtered frame, which has `label`."""
+    clash = [n for n in (*cosis, *train_rows["conference"].unique()) if n == "Total"]
+    if clash:
+        raise SystemExit('explore.py: "Total" is reserved for the totals row and column; '
+                         "rename the COSI or conference label that uses it")
     counts = pd.crosstab(train_rows["label"], train_rows["conference"])
     table = counts.reindex(index=list(dict.fromkeys(cosis)), columns=_year_order(counts.columns), fill_value=0)
     table.index.name = table.columns.name = None
