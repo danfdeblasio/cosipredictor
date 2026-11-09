@@ -21,7 +21,10 @@ def file_table(paths):
     """One row per CSV found: file name, row count, and whether load_csvs reads or skips it."""
     rows = []
     for f in csv_files(paths):
-        df = pd.read_csv(f)
+        try:
+            df = pd.read_csv(f)
+        except pd.errors.EmptyDataError:
+            raise SystemExit(f"explore.py: empty file (no header): {f}")
         status = "read" if "trackname" in df.columns else "skipped: no trackname"
         rows.append({"file": os.path.basename(f), "rows": len(df), "status": status})
     return pd.DataFrame(rows, columns=["file", "rows", "status"])
@@ -37,9 +40,17 @@ def load_raw(paths, files=None):
     if not (files["status"] == "read").any():
         raise SystemExit("explore.py: no CSV with a 'trackname' column in: " + ", ".join(paths))
     raw = load_csvs(paths)
-    raw["conference"] = raw["conference"].fillna(UNKNOWN) if "conference" in raw else UNKNOWN
-    raw["conference"] = raw["conference"].astype(str)
+    raw["conference"] = raw["conference"].map(_conference_label) if "conference" in raw else UNKNOWN
     return raw
+
+
+def _conference_label(value):
+    """Conference as text: blank -> (unknown); a whole number read as float (2023.0) -> "2023"."""
+    if pd.isna(value) or not str(value).strip():
+        return UNKNOWN
+    if isinstance(value, float) and value.is_integer():
+        return str(int(value))
+    return str(value).strip()
 
 
 def filter_raw(raw, cosis):
@@ -88,12 +99,17 @@ def missing_rates(raw):
     return rates
 
 
+def _cell(value):
+    """Table cell text: a '|' or line break in the data must not break the Markdown table."""
+    return " ".join(str(value).splitlines()).replace("|", "\\|")
+
+
 def md_table(df, index_name=None):
     """Render a DataFrame as a Markdown table (no tabulate dependency)."""
     if index_name is not None:
         df = df.reset_index().rename(columns={"index": index_name})
-    cells = [[str(v) for v in row] for row in df.itertuples(index=False)]
-    header = "| " + " | ".join(map(str, df.columns)) + " |"
+    cells = [[_cell(v) for v in row] for row in df.itertuples(index=False)]
+    header = "| " + " | ".join(map(_cell, df.columns)) + " |"
     sep = "|" + "|".join("---" for _ in df.columns) + "|"
     return "\n".join([header, sep] + ["| " + " | ".join(r) + " |" for r in cells])
 

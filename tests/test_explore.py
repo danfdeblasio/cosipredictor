@@ -141,3 +141,29 @@ def test_missing_path_exits_with_message(fixture_dir, tmp_path):
         run(fixture_dir, tmp_path, os.path.join(fixture_dir, "does_not_exist.csv"))
     assert "path not found" in str(exc.value.code)
     assert "does_not_exist.csv" in str(exc.value.code)
+
+
+def test_numeric_conference_with_blank_reads_as_integer_text(fixture_dir, tmp_path):
+    data = tmp_path / "data"
+    data.mkdir()
+    (data / "a.csv").write_text("title,trackname,conference\nOne,MLCSB,2023\nTwo,MLCSB,\n")
+    raw = explore.load_raw([str(data)])
+    assert sorted(raw["conference"]) == ["(unknown)", "2023"]
+
+
+def test_pipes_and_line_breaks_do_not_break_tables():
+    table = explore.md_table(pd.DataFrame({"conference": ["A | B", "C\nD"], "rows": [1, 2]}))
+    lines = table.splitlines()
+    assert len(lines) == 4
+    assert lines[2] == "| A \\| B | 1 |"
+    assert lines[3] == "| C D | 2 |"
+
+
+def test_zero_byte_csv_exits_with_message(fixture_dir, tmp_path):
+    data = tmp_path / "data"
+    data.mkdir()
+    (data / "empty.csv").write_text("")
+    with pytest.raises(SystemExit) as exc:
+        explore.file_table([str(data)])
+    assert "empty file" in str(exc.value.code)
+    assert "empty.csv" in str(exc.value.code)
