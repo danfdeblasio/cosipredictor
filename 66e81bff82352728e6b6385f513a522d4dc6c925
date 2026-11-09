@@ -1,0 +1,8 @@
+vt.idd:task: T002
+vt.idd:domain: backend
+vt.idd:agents: claude(coder,self-review)
+vt.idd:files: explore.py
+vt.idd:tdd: red=8 failed in T001, green=32 passed (-W error)
+vt.idd:satisfies: full (helpers and section landed in one commit)
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-11-09T16:19:56-06:00
