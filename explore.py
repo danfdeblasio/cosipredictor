@@ -27,10 +27,14 @@ def file_table(paths):
     return pd.DataFrame(rows, columns=["file", "rows", "status"])
 
 
-def load_raw(paths):
-    """The loaded rows exactly as read (before any filter or blank filling), with `conference` filled in.
-    Exits with a clear message when no CSV has a `trackname` column."""
-    if not any("trackname" in pd.read_csv(f, nrows=0).columns for f in csv_files(paths)):
+def load_raw(paths, files=None):
+    """The loaded rows as read, before any filter or blank filling, apart from `conference`, which is
+    filled with (unknown) and made a string. `files` is file_table(paths), the one place that decides
+    which files are read; it is computed when not given. Exits with a clear message when no CSV has a
+    `trackname` column."""
+    if files is None:
+        files = file_table(paths)
+    if not (files["status"] == "read").any():
         raise SystemExit("explore.py: no CSV with a 'trackname' column in: " + ", ".join(paths))
     raw = load_csvs(paths)
     raw["conference"] = raw["conference"].fillna(UNKNOWN) if "conference" in raw else UNKNOWN
@@ -103,7 +107,7 @@ def _pct(rates):
 
 def build_report(paths, cosis):
     files = file_table(paths)
-    raw = load_raw(paths)
+    raw = load_raw(paths, files)
     kept, stages = filter_raw(raw, cosis)
     counts = conference_counts(raw).rename_axis("conference").reset_index(name="rows")
     lines = [
@@ -144,7 +148,9 @@ def build_report(paths, cosis):
 
 
 def details_table(raw, kept, cosis):
-    """One row per loaded record. Contains titles, so it must stay out of git (cache/ is ignored)."""
+    """One row per loaded record. Contains titles, so it must stay out of git (cache/ is ignored).
+    `row` counts within `source_file`, which is the file's basename, so input files are assumed to have
+    distinct names."""
     flags = missing_flags(raw)
     label = raw["trackname"].map(make_normalizer(cosis))  # mapped COSI, also for rows later dropped
     title = raw["title"] if "title" in raw else pd.Series("", index=raw.index)
