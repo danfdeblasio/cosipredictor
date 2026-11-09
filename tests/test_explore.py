@@ -307,3 +307,59 @@ def test_latest_message_when_no_row_reaches_training(fixture_dir, cosis):
     with pytest.raises(SystemExit) as exc:
         explore.cosi_section(empty, cosis, latest="ISMB2025")
     assert str(exc.value.code).endswith("labels: (none)")
+
+
+# --- #13: Unmapped tracks ---------------------------------------------------------------------------
+# After reject removal, three fixture rows map to no COSI: "General Track" x2 (GLBIO2025) and
+# "General Computational Biology" x1 (ISMB2026). 3 = 15 - 12, the "after unmapped removal" step.
+
+def test_unmapped_tracks_hand_counts_and_order(fixture_dir, cosis):
+    table = explore.unmapped_tracks(explore.load_raw([fixture_dir]), cosis)
+    assert list(table.columns) == ["conference", "track", "rows"]
+    assert table.values.tolist() == [["GLBIO2025", "General Track", 2],
+                                     ["ISMB2026", "General Computational Biology", 1]]
+
+
+def test_unmapped_total_equals_filter_step(fixture_dir, cosis):
+    raw = explore.load_raw([fixture_dir])
+    _, stages = explore.filter_raw(raw, cosis)
+    removed = explore.funnel_table(stages).set_index("step").loc["after unmapped removal", "removed"]
+    assert explore.unmapped_tracks(raw, cosis)["rows"].sum() == removed == 3
+
+
+def test_rejected_unmapped_rows_are_not_counted(fixture_dir, cosis, tmp_path):
+    data = tmp_path / "data"
+    data.mkdir()
+    (data / "a.csv").write_text("title,trackname,decision,conference\n"
+                                "Kept,General Track,accept talk,GLBIO2025\n"
+                                "Dropped,General Track,reject,GLBIO2025\n"
+                                "Mapped,MLCSB,accept talk,ISMB2026\n")
+    table = explore.unmapped_tracks(explore.load_raw([str(data)]), cosis)
+    assert table.values.tolist() == [["GLBIO2025", "General Track", 1]]
+
+
+def test_blank_track_names_show_as_blank(fixture_dir, cosis, tmp_path):
+    data = tmp_path / "data"
+    data.mkdir()
+    (data / "a.csv").write_text('title,trackname,conference\nOne,,GLBIO2025\nTwo,"   ",GLBIO2025\n')
+    table = explore.unmapped_tracks(explore.load_raw([str(data)]), cosis)
+    assert table.values.tolist() == [["GLBIO2025", "(blank)", 2]]
+
+
+def test_report_unmapped_section(fixture_dir, tmp_path):
+    report = run_args(fixture_dir, tmp_path, fixture_dir)
+    assert "## Unmapped tracks" in report
+    assert report.index("## COSIs by conference") < report.index("## Unmapped tracks") < report.index(
+        "## Missing or empty fields")
+    assert "| GLBIO2025 | General Track | 2 |" in report
+    assert "| ISMB2026 | General Computational Biology | 1 |" in report
+    assert "Total: 3 rows" in report
+
+
+def test_no_unmapped_tracks_says_none(fixture_dir, tmp_path):
+    data = tmp_path / "data"
+    data.mkdir()
+    (data / "a.csv").write_text("title,trackname,conference\nOne,MLCSB,ISMB2026\n")
+    report = run_args(fixture_dir, tmp_path, str(data))
+    section = report.split("## Unmapped tracks", 1)[1].split("## ", 1)[0]
+    assert "None" in section and "|" not in section
