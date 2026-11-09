@@ -6,3 +6,11 @@ vt.idd:tdd: red=collection error: explore module missing, green=19 passed (-W er
 vt.idd:satisfies: full
 vt.idd:wave: 1
 vt.idd:timestamp: 2026-11-09T15:10:28-06:00
+
+vt.idd:task: T005
+vt.idd:domain: backend
+vt.idd:agents: claude
+vt.idd:files: explore.py
+vt.idd:satisfies: full (Real data: 21 files read, 0 skipped; funnel 14678->14405->9336->9103; 56,437 real text values checked, 0 in report)
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-11-09T15:11:05-06:00
