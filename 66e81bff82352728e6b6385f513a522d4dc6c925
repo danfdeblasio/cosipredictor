@@ -23,3 +23,11 @@ vt.idd:files: explore.py
 vt.idd:satisfies: full (Real data: grand total 9103, latest ISMB2026 (default), all 21 COSIs have ISMB2026 rows (both lists None), 0 of 56,437 text values in report)
 vt.idd:wave: 2
 vt.idd:timestamp: 2026-11-09T16:20:37-06:00
+
+vt.idd:task: T005
+vt.idd:domain: backend
+vt.idd:agents: claude
+vt.idd:files: explore.py
+vt.idd:satisfies: full (All sections other than the new one are byte-identical to the #11 real-data run)
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-11-09T16:20:38-06:00
