@@ -1,0 +1,8 @@
+vt.idd:task: T002
+vt.idd:domain: backend
+vt.idd:agents: claude(coder)
+vt.idd:files: common.py
+vt.idd:tdd: red=test_csv_files_lists_every_csv_in_order failed (ImportError), green=9 passed
+vt.idd:satisfies: partial (FR-002 report side in T004)
+vt.idd:wave: 0
+vt.idd:timestamp: 2026-11-09T15:08:37-06:00
