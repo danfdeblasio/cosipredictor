@@ -177,7 +177,7 @@ def test_zero_byte_csv_exits_with_message(fixture_dir, tmp_path):
 def _training_rows(fixture_dir, cosis):
     raw = explore.load_raw([fixture_dir])
     kept, _ = explore.filter_raw(raw, cosis)
-    return raw.loc[kept.index]
+    return kept  # the filtered training rows, with `label` and `conference`
 
 
 def run_args(fixture_dir, tmp_path, *args):
