@@ -300,3 +300,10 @@ def test_total_is_a_reserved_name(fixture_dir, cosis):
     renamed = rows.assign(conference=rows["conference"].replace({"ISMB2025": "Total"}))
     with pytest.raises(SystemExit):
         explore.cosi_conference_table(renamed, cosis)
+
+
+def test_latest_message_when_no_row_reaches_training(fixture_dir, cosis):
+    empty = _training_rows(fixture_dir, cosis).iloc[0:0]
+    with pytest.raises(SystemExit) as exc:
+        explore.cosi_section(empty, cosis, latest="ISMB2025")
+    assert str(exc.value.code).endswith("labels: (none)")

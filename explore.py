@@ -179,7 +179,7 @@ def cosi_section(train_rows, cosis, latest=None):
     if latest is not None:
         if latest not in labels:
             raise SystemExit(f"explore.py: --latest {latest} is not a conference with training rows; "
-                             "labels: " + ", ".join(labels))
+                             "labels: " + (", ".join(labels) or "(none)"))
         latest_labels, source = [latest], "--latest"
     else:
         latest_labels, source = latest_ismb(labels), "default"
