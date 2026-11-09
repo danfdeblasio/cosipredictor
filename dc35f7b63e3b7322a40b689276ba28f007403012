@@ -6,3 +6,11 @@ vt.idd:tdd: red=6 failed in T003, green=46 passed (-W error)
 vt.idd:satisfies: full
 vt.idd:wave: 1
 vt.idd:timestamp: 2026-11-09T16:45:19-06:00
+
+vt.idd:task: T005
+vt.idd:domain: backend
+vt.idd:agents: claude
+vt.idd:files: explore.py
+vt.idd:satisfies: full (Real data: section total 5,069 = unmapped step; 105 tracks in 28 conferences; other sections and details CSV byte-identical to #12 run; privacy: the only match is the one-word title 'Proceedings', which equals a track name shown in the section (metadata, not submission text))
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-11-09T16:45:58-06:00
