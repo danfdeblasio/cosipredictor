@@ -214,9 +214,11 @@ def test_stale_lists_are_disjoint(fixture_dir, cosis):
     never, not_latest = explore.stale_cosis(table, ["ISMB2026"])
     assert never == ["CAMDA"]
     assert not_latest == ["TextMining"]
+    assert not set(never) & set(not_latest)
     never, not_latest = explore.stale_cosis(table, ["ISMB2025"])
     assert never == ["CAMDA"]
     assert not_latest == ["iRNA"]
+    assert not set(never) & set(not_latest)
 
 
 def test_report_section_default_latest(fixture_dir, tmp_path):
@@ -270,3 +272,20 @@ def test_duplicate_cosi_names_count_once(fixture_dir, cosis):
     table = explore.cosi_conference_table(_training_rows(fixture_dir, cosis), cosis + ["MLCSB"])
     assert list(table.index).count("MLCSB") == 1
     assert table.loc["Total", "Total"] == 10
+
+
+def test_latest_ismb_returns_every_label_of_the_top_year(fixture_dir, cosis):
+    assert explore.latest_ismb(["ISMB2025", "ISMB2026", "ismb2026"]) == ["ISMB2026", "ismb2026"]
+    table = explore.cosi_conference_table(_training_rows(fixture_dir, cosis), cosis)
+    # TextMining is stale whichever of the two top-year labels is present.
+    assert explore.stale_cosis(table, ["ISMB2026", "ismb2026"])[1] == ["TextMining"]
+
+
+def test_empty_training_set(fixture_dir, cosis):
+    empty = _training_rows(fixture_dir, cosis).iloc[0:0]
+    table = explore.cosi_conference_table(empty, cosis)
+    assert table.loc["Total", "Total"] == 0
+    never, not_latest = explore.stale_cosis(table, [])
+    assert never == list(cosis) and not_latest == []
+    lines = explore.cosi_section(empty, cosis)
+    assert "No ISMB conference found; pass --latest to choose one." in lines
