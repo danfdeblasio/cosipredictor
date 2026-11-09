@@ -15,7 +15,8 @@ import re
 
 import pandas as pd
 
-from common import TEXT_COLS, csv_files, filter_training_data, load_csvs, make_normalizer, read_cosi_list
+from common import (TEXT_COLS, csv_files, filter_training_data, load_csvs, make_normalizer, read_cosi_list,
+                    rejected_mask)
 
 UNKNOWN = "(unknown)"
 
@@ -203,6 +204,37 @@ def cosi_section(train_rows, cosis, latest=None):
     return lines
 
 
+BLANK = "(blank)"
+
+
+def unmapped_tracks(raw, cosis):
+    """Rows per conference and raw track name for tracks that map to no COSI, after reject removal.
+    Same reject rule and COSI mapping as filter_training_data, so the total equals its unmapped step."""
+    kept = raw[~rejected_mask(raw)]
+    unmapped = kept[kept["trackname"].map(make_normalizer(cosis)).isna()]
+    track = unmapped["trackname"].map(lambda t: BLANK if pd.isna(t) or not str(t).strip() else str(t))
+    counts = (pd.DataFrame({"conference": unmapped["conference"], "track": track})
+              .value_counts().rename("rows").reset_index())
+    order = {c: i for i, c in enumerate(_year_order(counts["conference"]))}
+    counts["_conf"] = counts["conference"].map(order)
+    counts = counts.sort_values(["_conf", "rows", "track"], ascending=[True, False, True], kind="stable")
+    return counts.drop(columns="_conf").reset_index(drop=True)[["conference", "track", "rows"]]
+
+
+def unmapped_section(raw, cosis, stages):
+    """Markdown lines for the "Unmapped tracks" section. `stages` are filter_training_data's step counts,
+    so the total line shows the filter's own number next to this section's."""
+    table = unmapped_tracks(raw, cosis)
+    lines = ["## Unmapped tracks", "",
+             "Tracks that map to no COSI, after reject removal (track names as they appear in the data).", ""]
+    if table.empty:
+        return lines + ["None", ""]
+    total = int(table["rows"].sum())
+    step = int(funnel_table(stages).set_index("step").loc["after unmapped removal", "removed"])
+    return lines + [md_table(table), "",
+                    f'Total: {total:,} rows (the "after unmapped removal" step removes {step:,}).', ""]
+
+
 def build_report(paths, cosis, latest=None):
     files = file_table(paths)
     raw = load_raw(paths, files)
@@ -230,6 +262,7 @@ def build_report(paths, cosis, latest=None):
         md_table(funnel_table(stages)),
         "",
         *cosi_section(kept, cosis, latest),
+        *unmapped_section(raw, cosis, stages),
         "## Missing or empty fields",
         "",
         "Share of rows whose field is empty, blank or absent, measured before blanks are filled.",

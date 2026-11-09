@@ -353,7 +353,7 @@ def test_report_unmapped_section(fixture_dir, tmp_path):
         "## Missing or empty fields")
     assert "| GLBIO2025 | General Track | 2 |" in report
     assert "| ISMB2026 | General Computational Biology | 1 |" in report
-    assert "Total: 3 rows" in report
+    assert 'Total: 3 rows (the "after unmapped removal" step removes 3).' in report
 
 
 def test_no_unmapped_tracks_says_none(fixture_dir, tmp_path):
