@@ -124,3 +124,20 @@ def test_no_csv_with_trackname_exits_with_message(fixture_dir, tmp_path):
         run(fixture_dir, tmp_path, only_skipped)
     assert "trackname" in str(exc.value.code)
     assert "no_trackname.csv" in str(exc.value.code)
+
+
+def test_no_training_rows_shows_dash_not_nan(fixture_dir, tmp_path):
+    # Every row maps to no COSI, so nothing reaches training: rates read "-" instead of "nan%".
+    data = tmp_path / "data"
+    data.mkdir()
+    (data / "a.csv").write_text("title,trackname,conference\nSome talk,Nowhere Track,X2025\n")
+    report, _ = run(fixture_dir, tmp_path, str(data))
+    assert "nan" not in report
+    assert "| All | 0 | - | - | - |" in report
+
+
+def test_missing_path_exits_with_message(fixture_dir, tmp_path):
+    with pytest.raises(SystemExit) as exc:
+        run(fixture_dir, tmp_path, os.path.join(fixture_dir, "does_not_exist.csv"))
+    assert "path not found" in str(exc.value.code)
+    assert "does_not_exist.csv" in str(exc.value.code)

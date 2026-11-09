@@ -97,7 +97,7 @@ def md_table(df, index_name=None):
 def _pct(rates):
     out = rates.copy()
     for c in TEXT_COLS:
-        out[c] = out[c].map(lambda x: f"{x * 100:.1f}%")
+        out[c] = out[c].map(lambda x: "-" if pd.isna(x) else f"{x * 100:.1f}%")  # "-" = no rows
     return out
 
 
@@ -172,6 +172,9 @@ def main(argv=None):
     args = ap.parse_args(argv)
 
     paths = [os.path.expanduser(p) for p in args.data]
+    missing = [p for p in paths if not os.path.exists(p)]
+    if missing:
+        raise SystemExit("explore.py: path not found: " + ", ".join(missing))
     report, details = build_report(paths, read_cosi_list(args.cosis))
     for path in (args.out, args.details):
         os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
