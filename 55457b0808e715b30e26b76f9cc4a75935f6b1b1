@@ -1,0 +1,8 @@
+vt.idd:task: T003
+vt.idd:domain: backend
+vt.idd:agents: claude(tester)
+vt.idd:files: tests/test_explore.py
+vt.idd:tdd: red=collection error: explore module missing, green=pending T004
+vt.idd:satisfies: partial (GREEN in T004)
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-11-09T15:10:00-06:00
