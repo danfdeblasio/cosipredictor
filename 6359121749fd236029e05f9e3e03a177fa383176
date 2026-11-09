@@ -1,0 +1,8 @@
+vt.idd:task: T002
+vt.idd:domain: backend
+vt.idd:agents: claude(coder)
+vt.idd:files: common.py
+vt.idd:tdd: red=test_rejected_mask_rule failed (ImportError), green=40 passed (-W error)
+vt.idd:satisfies: partial (FR-002 report side in T004)
+vt.idd:wave: 0
+vt.idd:timestamp: 2026-11-09T16:44:19-06:00
