@@ -1,11 +1,13 @@
 """Write the data-exploration (EDA) report for the submission CSVs.
 
 The report holds aggregate counts only: files, records per conference, the training-data filtering steps,
-and missing or empty fields per conference. Per-record rows, titles included, go to the details CSV, which
-lives under the gitignored cache/ by default.
+training rows per COSI and conference with the COSIs that have no (recent) rows, and missing or empty
+fields per conference. Per-record rows, titles included, go to the details CSV, which lives under the
+gitignored cache/ by default.
 
-Example:
+Examples:
     python explore.py "~/Downloads/ISCB accepted submissions" --cosis cosis.txt
+    python explore.py "~/Downloads/ISCB accepted submissions" --latest ISMB2025
 """
 import argparse
 import os
