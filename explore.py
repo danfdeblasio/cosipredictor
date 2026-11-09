@@ -1,14 +1,17 @@
 """Write the data-exploration (EDA) report for the submission CSVs.
 
 The report holds aggregate counts only: files, records per conference, the training-data filtering steps,
-and missing or empty fields per conference. Per-record rows, titles included, go to the details CSV, which
-lives under the gitignored cache/ by default.
+training rows per COSI and conference with the COSIs that have no (recent) rows, and missing or empty
+fields per conference. Per-record rows, titles included, go to the details CSV, which lives under the
+gitignored cache/ by default.
 
-Example:
+Examples:
     python explore.py "~/Downloads/ISCB accepted submissions" --cosis cosis.txt
+    python explore.py "~/Downloads/ISCB accepted submissions" --latest ISMB2025
 """
 import argparse
 import os
+import re
 
 import pandas as pd
 
@@ -68,6 +71,54 @@ def conference_counts(raw):
     return counts.reindex(_conference_order(list(counts.index)))
 
 
+def _label_year(label):
+    """The trailing four-digit year of a conference label (e.g. "ISMB/ECCB 2019" -> 2019), or None."""
+    m = re.search(r"(?<!\d)(\d{4})\s*$", str(label))  # a standalone 4-digit number only
+    return int(m.group(1)) if m else None
+
+
+def _year_order(labels):
+    """Conference labels ordered by trailing year, then label; labels without a year and (unknown) last."""
+    labels = list(dict.fromkeys(labels))
+    dated = sorted((l for l in labels if l != UNKNOWN and _label_year(l) is not None),
+                   key=lambda l: (_label_year(l), l))
+    undated = sorted(l for l in labels if l != UNKNOWN and _label_year(l) is None)
+    return dated + undated + ([UNKNOWN] if UNKNOWN in labels else [])
+
+
+def latest_ismb(labels):
+    """Labels of the most recent ISMB conference: start with "ISMB" (any case) and have the highest year."""
+    ismb = [l for l in set(labels) if str(l).upper().startswith("ISMB") and _label_year(l) is not None]
+    if not ismb:
+        return []
+    top = max(_label_year(l) for l in ismb)
+    return sorted(l for l in ismb if _label_year(l) == top)
+
+
+def cosi_conference_table(train_rows, cosis):
+    """Training rows per COSI (rows, in cosis.txt order, zeros included) x conference (columns, by year),
+    with a Total row and column. `train_rows` is the filtered frame, which has `label`."""
+    clash = [n for n in (*cosis, *train_rows["conference"].unique()) if n == "Total"]
+    if clash:
+        raise SystemExit('explore.py: "Total" is reserved for the totals row and column; '
+                         "rename the COSI or conference label that uses it")
+    counts = pd.crosstab(train_rows["label"], train_rows["conference"])
+    table = counts.reindex(index=list(dict.fromkeys(cosis)), columns=_year_order(counts.columns), fill_value=0)
+    table.index.name = table.columns.name = None
+    table["Total"] = table.sum(axis=1)
+    table.loc["Total"] = table.sum(axis=0)
+    return table.astype(int)
+
+
+def stale_cosis(table, latest):
+    """(COSIs with no training rows at all, COSIs with none in the `latest` labels but some earlier)."""
+    rows = table.drop(index="Total")
+    never = [c for c in rows.index if rows.loc[c, "Total"] == 0]
+    in_latest = rows[[l for l in latest if l in rows.columns]].sum(axis=1)
+    not_latest = [c for c in rows.index if rows.loc[c, "Total"] > 0 and in_latest[c] == 0]
+    return never, not_latest
+
+
 def funnel_table(stages):
     remaining = [n for _, n in stages]
     removed = [0] + [a - b for a, b in zip(remaining, remaining[1:])]
@@ -121,7 +172,38 @@ def _pct(rates):
     return out
 
 
-def build_report(paths, cosis):
+def cosi_section(train_rows, cosis, latest=None):
+    """Markdown lines for the "COSIs by conference" section. `latest` is a label given with --latest."""
+    table = cosi_conference_table(train_rows, cosis)
+    labels = [c for c in table.columns if c not in ("Total", UNKNOWN)]  # real conference labels only
+    if latest is not None:
+        if latest not in labels:
+            raise SystemExit(f"explore.py: --latest {latest} is not a conference with training rows; "
+                             "labels: " + (", ".join(labels) or "(none)"))
+        latest_labels, source = [latest], "--latest"
+    else:
+        latest_labels, source = latest_ismb(labels), "default"
+    never, not_latest = stale_cosis(table, latest_labels)
+    lines = [
+        "## COSIs by conference",
+        "",
+        "Training rows per COSI in `cosis.txt` and conference label (labels as they appear in the data).",
+        "",
+        md_table(table, index_name="COSI"),
+        "",
+    ]
+    if latest_labels:
+        name = ", ".join(latest_labels)
+        lines += [f"Most recent ISMB conference: {name} ({source})", ""]
+    else:
+        lines += ["No ISMB conference found; pass --latest to choose one.", ""]
+    lines += ["### No training rows at all", "", ", ".join(never) or "None", ""]
+    if latest_labels:
+        lines += [f"### No training rows in {name}, but some earlier", "", ", ".join(not_latest) or "None", ""]
+    return lines
+
+
+def build_report(paths, cosis, latest=None):
     files = file_table(paths)
     raw = load_raw(paths, files)
     kept, stages = filter_raw(raw, cosis)
@@ -147,6 +229,7 @@ def build_report(paths, cosis):
         "",
         md_table(funnel_table(stages)),
         "",
+        *cosi_section(kept, cosis, latest),
         "## Missing or empty fields",
         "",
         "Share of rows whose field is empty, blank or absent, measured before blanks are filled.",
@@ -191,13 +274,14 @@ def main(argv=None):
     ap.add_argument("--out", default=os.path.join("reports", "eda.md"), help="Markdown report (aggregates only)")
     ap.add_argument("--details", default=os.path.join("cache", "eda_details.csv"),
                     help="per-record CSV; contains titles, keep it out of git")
+    ap.add_argument("--latest", help="conference label to treat as the most recent ISMB (default: detected)")
     args = ap.parse_args(argv)
 
     paths = [os.path.expanduser(p) for p in args.data]
     missing = [p for p in paths if not os.path.exists(p)]
     if missing:
         raise SystemExit("explore.py: path not found: " + ", ".join(missing))
-    report, details = build_report(paths, read_cosi_list(args.cosis))
+    report, details = build_report(paths, read_cosi_list(args.cosis), args.latest)
     for path in (args.out, args.details):
         os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(args.out, "w") as f:
