@@ -167,3 +167,87 @@ def test_zero_byte_csv_exits_with_message(fixture_dir, tmp_path):
         explore.file_table([str(data)])
     assert "empty file" in str(exc.value.code)
     assert "empty.csv" in str(exc.value.code)
+
+
+# --- #12: COSIs by conference -----------------------------------------------------------------------
+# Training rows per COSI x conference on the fixtures, worked out by hand (fixture COSI list order):
+#   3DSIG 1/1/0, MLCSB 1/2/1, BioVis 1/1/0, TextMining 1/0/0, iRNA 0/1/0, CAMDA 0/0/0
+#   (columns ISMB2025 / ISMB2026 / (unknown)); totals 4/5/1 = 10.
+
+def _training_rows(fixture_dir, cosis):
+    raw = explore.load_raw([fixture_dir])
+    kept, _ = explore.filter_raw(raw, cosis)
+    return raw.loc[kept.index]
+
+
+def run_args(fixture_dir, tmp_path, *args):
+    out, details = tmp_path / "eda.md", tmp_path / "cache" / "eda_details.csv"
+    cosis = os.path.join(fixture_dir, "cosis_fixture.txt")
+    explore.main([*args, "--cosis", cosis, "--out", str(out), "--details", str(details)])
+    return out.read_text()
+
+
+def test_cosi_conference_table_matches_hand_counts(fixture_dir, cosis):
+    table = explore.cosi_conference_table(_training_rows(fixture_dir, cosis), cosis)
+    assert list(table.index) == ["3DSIG", "MLCSB", "BioVis", "TextMining", "iRNA", "CAMDA", "Total"]
+    assert list(table.columns) == ["ISMB2025", "ISMB2026", "(unknown)", "Total"]
+    assert table.loc["MLCSB"].tolist() == [1, 2, 1, 4]
+    assert table.loc["TextMining"].tolist() == [1, 0, 0, 1]
+    assert table.loc["CAMDA"].tolist() == [0, 0, 0, 0]
+    assert table.loc["Total"].tolist() == [4, 5, 1, 10]
+
+
+def test_year_order_puts_years_first_then_unknown():
+    labels = ["ismb2020", "ISMBECCB2021", "(unknown)", "ISMB2026", "ISMB/ECCB 2019", "ISMB2020", "Workshop"]
+    assert explore._year_order(labels) == ["ISMB/ECCB 2019", "ISMB2020", "ismb2020", "ISMBECCB2021", "ISMB2026",
+                                           "Workshop", "(unknown)"]
+
+
+def test_latest_ismb_handles_label_variants():
+    assert explore.latest_ismb(["ISMB/ECCB 2019", "ISMBECCB2025", "ismb2020", "GLBIO2026"]) == ["ISMBECCB2025"]
+    assert explore.latest_ismb(["ISMB2026", "GLBIO2027", "(unknown)"]) == ["ISMB2026"]
+    assert explore.latest_ismb(["GLBIO2025", "(unknown)"]) == []
+
+
+def test_stale_lists_are_disjoint(fixture_dir, cosis):
+    table = explore.cosi_conference_table(_training_rows(fixture_dir, cosis), cosis)
+    never, not_latest = explore.stale_cosis(table, ["ISMB2026"])
+    assert never == ["CAMDA"]
+    assert not_latest == ["TextMining"]
+    never, not_latest = explore.stale_cosis(table, ["ISMB2025"])
+    assert never == ["CAMDA"]
+    assert not_latest == ["iRNA"]
+
+
+def test_report_section_default_latest(fixture_dir, tmp_path):
+    report = run_args(fixture_dir, tmp_path, fixture_dir)
+    assert "## COSIs by conference" in report
+    assert "| MLCSB | 1 | 2 | 1 | 4 |" in report
+    assert "Most recent ISMB conference: ISMB2026 (default)" in report
+    section = report.split("## COSIs by conference", 1)[1]
+    never = section.split("### No training rows at all", 1)[1].split("###", 1)[0]
+    latest = section.split("### No training rows in ISMB2026", 1)[1].split("##", 1)[0]
+    assert "CAMDA" in never and "TextMining" not in never
+    assert "TextMining" in latest and "CAMDA" not in latest
+
+
+def test_report_section_with_latest_override(fixture_dir, tmp_path):
+    report = run_args(fixture_dir, tmp_path, fixture_dir, "--latest", "ISMB2025")
+    assert "Most recent ISMB conference: ISMB2025 (--latest)" in report
+    latest = report.split("### No training rows in ISMB2025", 1)[1].split("##", 1)[0]
+    assert "iRNA" in latest and "TextMining" not in latest
+
+
+def test_unknown_latest_exits_with_message(fixture_dir, tmp_path):
+    with pytest.raises(SystemExit) as exc:
+        run_args(fixture_dir, tmp_path, fixture_dir, "--latest", "ISMB2099")
+    assert "ISMB2099" in str(exc.value.code)
+
+
+def test_no_ismb_label_is_noted(fixture_dir, tmp_path):
+    data = tmp_path / "data"
+    data.mkdir()
+    (data / "a.csv").write_text("title,trackname,conference\nSome talk,MLCSB,GLBIO2025\n")
+    report = run_args(fixture_dir, tmp_path, str(data))
+    assert "No ISMB conference found" in report
+    assert "### No training rows at all" in report
