@@ -113,3 +113,13 @@ def test_non_string_decision_values_are_not_rejected(cosis):
     out, stages = filter_training_data(df, cosis)
     assert len(out) == 2
     assert stages[1] == ("after reject removal", 2)
+
+
+def test_csv_files_lists_every_csv_in_order(fixture_dir):
+    # Directories expand to their sorted *.csv files, plain files pass through, and files without a
+    # trackname column are still listed (load_csvs skips them later).
+    from common import csv_files
+    names = [os.path.basename(f) for f in csv_files([fixture_dir])]
+    assert names == ["glbio_fixture.csv", "ismb_fixture.csv", "no_decision.csv", "no_trackname.csv"]
+    single = os.path.join(fixture_dir, "no_decision.csv")
+    assert csv_files([single]) == [single]

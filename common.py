@@ -45,13 +45,19 @@ def make_normalizer(cosis):
     return normalize
 
 
-def load_csvs(paths):
-    """Load CSVs from files and/or directories into one DataFrame."""
+def csv_files(paths):
+    """List the CSV files that `paths` names: a directory expands to its sorted *.csv files."""
     files = []
     for p in paths:
         files += sorted(glob.glob(os.path.join(p, "*.csv"))) if os.path.isdir(p) else [p]
+    return files
+
+
+def load_csvs(paths):
+    """Load CSVs from files and/or directories into one DataFrame. Files without a `trackname`
+    column are skipped."""
     frames = []
-    for f in files:
+    for f in csv_files(paths):
         df = pd.read_csv(f)
         if "trackname" not in df.columns:
             continue
