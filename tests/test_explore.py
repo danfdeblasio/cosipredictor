@@ -251,3 +251,22 @@ def test_no_ismb_label_is_noted(fixture_dir, tmp_path):
     report = run_args(fixture_dir, tmp_path, str(data))
     assert "No ISMB conference found" in report
     assert "### No training rows at all" in report
+
+
+def test_latest_rejects_total_and_unknown(fixture_dir, tmp_path):
+    for bad in ("Total", "(unknown)"):
+        with pytest.raises(SystemExit) as exc:
+            run_args(fixture_dir, tmp_path, fixture_dir, "--latest", bad)
+        assert "not a conference" in str(exc.value.code)
+
+
+def test_year_needs_a_standalone_four_digit_number():
+    assert explore._label_year("ISMB 99999") is None
+    assert explore._label_year("ISMB2026") == 2026
+    assert explore.latest_ismb(["ISMB2026", "ISMB 99999"]) == ["ISMB2026"]
+
+
+def test_duplicate_cosi_names_count_once(fixture_dir, cosis):
+    table = explore.cosi_conference_table(_training_rows(fixture_dir, cosis), cosis + ["MLCSB"])
+    assert list(table.index).count("MLCSB") == 1
+    assert table.loc["Total", "Total"] == 10

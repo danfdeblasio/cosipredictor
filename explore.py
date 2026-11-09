@@ -71,7 +71,7 @@ def conference_counts(raw):
 
 def _label_year(label):
     """The trailing four-digit year of a conference label (e.g. "ISMB/ECCB 2019" -> 2019), or None."""
-    m = re.search(r"(\d{4})\s*$", str(label))
+    m = re.search(r"(?<!\d)(\d{4})\s*$", str(label))  # a standalone 4-digit number only
     return int(m.group(1)) if m else None
 
 
@@ -97,7 +97,7 @@ def cosi_conference_table(train_rows, cosis):
     """Training rows per COSI (rows, in cosis.txt order, zeros included) x conference (columns, by year),
     with a Total row and column. `train_rows` is the filtered frame, which has `label`."""
     counts = pd.crosstab(train_rows["label"], train_rows["conference"])
-    table = counts.reindex(index=list(cosis), columns=_year_order(counts.columns), fill_value=0)
+    table = counts.reindex(index=list(dict.fromkeys(cosis)), columns=_year_order(counts.columns), fill_value=0)
     table.index.name = table.columns.name = None
     table["Total"] = table.sum(axis=1)
     table.loc["Total"] = table.sum(axis=0)
@@ -169,13 +169,14 @@ def _pct(rates):
 def cosi_section(train_rows, cosis, latest=None):
     """Markdown lines for the "COSIs by conference" section. `latest` is a label given with --latest."""
     table = cosi_conference_table(train_rows, cosis)
+    labels = [c for c in table.columns if c not in ("Total", UNKNOWN)]  # real conference labels only
     if latest is not None:
-        if latest not in table.columns:
-            raise SystemExit(f"explore.py: --latest {latest} has no training rows; labels: "
-                             + ", ".join(c for c in table.columns if c != "Total"))
+        if latest not in labels:
+            raise SystemExit(f"explore.py: --latest {latest} is not a conference with training rows; "
+                             "labels: " + ", ".join(labels))
         latest_labels, source = [latest], "--latest"
     else:
-        latest_labels, source = latest_ismb([c for c in table.columns if c != "Total"]), "default"
+        latest_labels, source = latest_ismb(labels), "default"
     never, not_latest = stale_cosis(table, latest_labels)
     lines = [
         "## COSIs by conference",
