@@ -123,3 +123,13 @@ def test_csv_files_lists_every_csv_in_order(fixture_dir):
     assert names == ["glbio_fixture.csv", "ismb_fixture.csv", "no_decision.csv", "no_trackname.csv"]
     single = os.path.join(fixture_dir, "no_decision.csv")
     assert csv_files([single]) == [single]
+
+
+def test_rejected_mask_rule():
+    # "reject" anywhere in `decision`, any case; NaN, numbers and a missing column count as not rejected.
+    from common import rejected_mask
+    df = pd.DataFrame({"decision": ["accept talk", "Reject", "auto-REJECTED", None, 3.0]})
+    assert rejected_mask(df).tolist() == [False, True, True, False, False]
+    no_column = pd.DataFrame({"title": ["a", "b"]})
+    assert rejected_mask(no_column).tolist() == [False, False]
+    assert list(rejected_mask(df.iloc[[1, 3]]).index) == [1, 3]

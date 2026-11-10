@@ -66,6 +66,13 @@ def load_csvs(paths):
     return pd.concat(frames, ignore_index=True)
 
 
+def rejected_mask(df):
+    """True for rows whose `decision` contains "reject" (any case). NaN, non-text values and a missing
+    `decision` column count as not rejected."""
+    decision = df["decision"] if "decision" in df.columns else pd.Series("", index=df.index)
+    return decision.fillna("").astype(str).str.contains("reject", case=False)
+
+
 def filter_training_data(df, cosis):
     """Apply the training filters and return (filtered frame, [(stage, row count), ...]).
 
@@ -74,8 +81,7 @@ def filter_training_data(df, cosis):
     and COSI. A missing `decision` column counts as "not rejected".
     """
     stages = [("loaded", len(df))]
-    decision = df["decision"] if "decision" in df.columns else pd.Series("", index=df.index)
-    df = df[~decision.fillna("").astype(str).str.contains("reject", case=False)].copy()
+    df = df[~rejected_mask(df)].copy()
     stages.append(("after reject removal", len(df)))
     df["label"] = df["trackname"].map(make_normalizer(cosis))
     df = prepare_text(df[df["label"].notna()])
