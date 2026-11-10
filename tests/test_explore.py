@@ -377,3 +377,27 @@ def test_unmapped_order_ties_unknown_and_aliases(fixture_dir, cosis, tmp_path):
     assert table.values.tolist() == [["LATAM2024", "Track A", 3], ["LATAM2024", "Track B", 3],
                                      ["LATAM2024", "Track C", 1], ["ISMB2026", "General", 1],
                                      ["(unknown)", "Misc", 1]]
+
+
+# --- #14: Duplicate and placeholder titles -------------------------------------------------------------
+
+def test_title_key_matches_eval_set_norm_title():
+    assert explore.title_key("Deep Learning for Gene Regulation!") == "deeplearningforgeneregulation"
+    assert explore.title_key("Q&A") == "qa"
+    assert explore.title_key(None) == ""
+    assert explore.title_key(float("nan")) == ""
+
+
+@pytest.mark.parametrize("title, rule", [
+    ("TBA", "list"), ("tbd.", "list"), ("TBC", "list"), ("Q&A", "list"), ("Closing Remarks", "list"),
+    ("Opening remarks", "list"), ("Welcome", "list"),
+    ("Paper 12", "paperN"), ("paper3", "paperN"),
+    ("", "empty"), ("   ", "empty"), (None, "empty"), ("!!!", "empty"),
+    ("Keynote: TBA", "word"), ("Session tbd", "word"),
+    ("Dataset based protein design", ""),       # "datasetbased" contains "tba", but not as a word
+    ("Keynote: Protein folding at scale", ""),  # keynotes with real titles are not placeholders
+    ("Closing remarks and outlook on single-cell biology", ""),
+    ("TBAseq: a new assay", ""),
+])
+def test_placeholder_rule(title, rule):
+    assert explore.placeholder_rule(title) == rule
