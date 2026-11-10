@@ -1,0 +1,8 @@
+vt.idd:task: T001
+vt.idd:domain: backend
+vt.idd:agents: claude(tester)
+vt.idd:files: tests/test_explore.py
+vt.idd:tdd: red=20 failed (title_key/placeholder_rule missing), 47 passed, green=pending T002
+vt.idd:satisfies: partial (GREEN in T002)
+vt.idd:wave: 0
+vt.idd:timestamp: 2026-11-09T22:04:04-06:00
