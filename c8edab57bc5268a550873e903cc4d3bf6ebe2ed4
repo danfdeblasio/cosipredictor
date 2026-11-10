@@ -1,0 +1,8 @@
+vt.idd:task: T002
+vt.idd:domain: backend
+vt.idd:agents: claude(coder)
+vt.idd:files: explore.py
+vt.idd:tdd: red=20 failed in T001, green=67 passed (-W error)
+vt.idd:satisfies: full
+vt.idd:wave: 0
+vt.idd:timestamp: 2026-11-09T22:04:27-06:00
