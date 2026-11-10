@@ -2,9 +2,10 @@
 
 The report holds aggregate counts and conference, track and COSI names only: files, records per
 conference, the training-data filtering steps, training rows per COSI and conference with the COSIs that
-have no (recent) rows, the unmapped track names per conference, and missing or empty fields per
-conference. Per-record rows, titles included, go to the details CSV, which lives under the
-gitignored cache/ by default.
+have no (recent) rows, the unmapped track names per conference, duplicate-title classes, placeholder-title
+counts (no titles shown), and missing or empty fields per conference. Per-record rows, titles included, go
+to the details CSV under the gitignored cache/ by default; besides the per-row flags it has the columns
+title_key, placeholder, dup_same_cosi and dup_multi_cosi.
 
 Examples:
     python explore.py "~/Downloads/ISCB accepted submissions" --cosis cosis.txt
@@ -206,13 +207,52 @@ def cosi_section(train_rows, cosis, latest=None):
 
 
 BLANK = "(blank)"
+UNMAPPED = "(unmapped)"
+
+# Placeholder titles (D11, decided by @eri2905 on #14): exact title keys, "paper<N>", an empty key, or
+# TBA/TBD/TBC as a separate word in the original title. Removing them from training is #8.
+PLACEHOLDER_KEYS = {"tba", "tbd", "tbc", "qa", "closingremarks", "openingremarks", "welcome"}
+_PAPER_N = re.compile(r"paper\d+")
+_TBX_WORD = re.compile(r"\b(tba|tbd|tbc)\b", re.IGNORECASE)
+
+
+def title_key(title):
+    """A title's key: lowercase with every non-alphanumeric character removed. Same as norm_title in
+    experiments/eval_set.py for any title; unlike it, a missing title (None/NaN) gives "" instead of "nan"."""
+    if title is None or (isinstance(title, float) and pd.isna(title)):
+        return ""
+    return re.sub(r"[^a-z0-9]", "", str(title).lower())
+
+
+def placeholder_rule(title):
+    """The placeholder rule a title matches ("list", "paperN", "empty" or "word"), or "" for a real title."""
+    key = title_key(title)
+    if key == "":
+        return "empty"
+    if key in PLACEHOLDER_KEYS:
+        return "list"
+    if _PAPER_N.fullmatch(key):
+        return "paperN"
+    if _TBX_WORD.search(str(title)):
+        return "word"
+    return ""
+
+
+def _after_reject(raw, cosis):
+    """The rows that survive reject removal, with `label` (the mapped COSI, NaN when the track maps to none)
+    and `_title` (None when there is no title column). Same reject rule and COSI mapping as
+    filter_training_data; the unmapped, duplicate and placeholder sections all start from here."""
+    rows = raw[~rejected_mask(raw)].copy()
+    rows["label"] = rows["trackname"].map(make_normalizer(cosis))
+    rows["_title"] = rows["title"] if "title" in rows else None
+    return rows
 
 
 def unmapped_tracks(raw, cosis):
     """Rows per conference and raw track name for tracks that map to no COSI, after reject removal.
     Same reject rule and COSI mapping as filter_training_data, so the total equals its unmapped step."""
-    kept = raw[~rejected_mask(raw)]
-    unmapped = kept[kept["trackname"].map(make_normalizer(cosis)).isna()]
+    rows = _after_reject(raw, cosis)
+    unmapped = rows[rows["label"].isna()]
     track = unmapped["trackname"].map(lambda t: BLANK if pd.isna(t) or not str(t).strip() else str(t))
     counts = (pd.DataFrame({"conference": unmapped["conference"], "track": track})
               .value_counts().rename("rows").reset_index())
@@ -235,6 +275,104 @@ def unmapped_section(raw, cosis, stages):
     step = int(funnel_table(stages).set_index("step").loc["after unmapped removal", "removed"])
     return lines + [md_table(table), "",
                     f'Total: {total:,} rows (the "after unmapped removal" step removes {step:,}).', ""]
+
+
+def _dedupe_rows(raw, cosis):
+    """The rows that reach the dedupe step (not rejected, mapped to a COSI), with `label`, `key` and `year`."""
+    rows = _after_reject(raw, cosis)
+    rows = rows[rows["label"].notna()].copy()
+    rows["key"] = rows["_title"].map(title_key)
+    rows["year"] = rows["conference"].map(_label_year)
+    # Multi-COSI groups are formed within a conference year; a label with no year is its own group, so two
+    # different undated conferences are never pooled together.
+    rows["year_group"] = [str(y) if y is not None else f"label:{c}" for y, c in zip(rows["year"], rows["conference"])]
+    return rows
+
+
+DUP_CLASSES = ["exact title, same COSI", "same key, same COSI", "same key, different COSIs (same year)"]
+
+
+def _duplicate_masks(rows):
+    """Row masks for the same-key same-COSI groups (all years) and the multi-COSI groups (same year).
+    Rows with an empty key are left out of both (D2)."""
+    keyed = rows[rows["key"] != ""]
+    same = keyed.groupby(["key", "label"])["key"].transform("size") > 1
+    multi = keyed.groupby(["year_group", "key"])["label"].transform("nunique") > 1
+    return (same.reindex(rows.index, fill_value=False), multi.reindex(rows.index, fill_value=False))
+
+
+def duplicate_counts(raw, cosis):
+    """(table of groups / rows / extra rows per duplicate class, number of multi-COSI groups whose title is a
+    placeholder). The exact class uses the raw title, as train.py's dedupe does (blank titles count as equal)."""
+    rows = _dedupe_rows(raw, cosis)
+    title = rows["_title"]
+    exact = rows.assign(_t=title).groupby(["_t", "label"], dropna=False).size()
+    exact = exact[exact > 1]
+    same_mask, multi_mask = _duplicate_masks(rows)
+    same = rows[same_mask].groupby(["key", "label"]).size()
+    multi_rows = rows[multi_mask].assign(_ph=title[multi_mask].map(placeholder_rule) != "")
+    multi = multi_rows.groupby(["year_group", "key"]).size()
+    table = pd.DataFrame(
+        [[len(exact), int(exact.sum()), int((exact - 1).sum())],
+         [len(same), int(same.sum()), int((same - 1).sum())],
+         [len(multi), int(multi.sum()), "-"]],
+        index=DUP_CLASSES, columns=["groups", "rows", "extra rows"])
+    # A group counts as a placeholder group when any of its rows' original titles is a placeholder (the
+    # "word" rule needs the original title, not the key).
+    multi_placeholders = int(multi_rows.groupby(["year_group", "key"])["_ph"].any().sum())
+    return table, multi_placeholders
+
+
+def duplicate_section(raw, cosis):
+    table, multi_placeholders = duplicate_counts(raw, cosis)
+    return ["## Duplicate titles", "",
+            "Rows that reach the dedupe step. The key is the title in lowercase without punctuation or spaces. "
+            "Same-COSI classes span all years, as train.py's dedupe does; the multi-COSI class is counted "
+            "within a conference year. Titles with an empty key are left out of the two key classes and counted as "
+            "placeholders; the exact-title class counts them as equal, as train.py does.", "",
+            md_table(table, index_name="class"), "",
+            f"Multi-COSI groups with a placeholder title: {multi_placeholders}.", ""]
+
+
+def placeholder_counts(raw, kept, cosis):
+    """Placeholder rows after reject removal: by rule, by conference and by COSI (tracks that map to no COSI
+    in an "(unmapped)" row, so every table adds up to the total), each with how many reach training (the
+    rows in `kept`)."""
+    rows = _after_reject(raw, cosis)
+    rows["rule"] = rows["_title"].map(placeholder_rule)
+    rows = rows[rows["rule"] != ""].copy()
+    rows["in_training"] = rows.index.isin(kept.index)
+    rows["label"] = rows["label"].fillna(UNMAPPED)
+
+    def by(col, order):
+        g = rows.groupby(col).agg(rows=("rule", "size"), in_training=("in_training", "sum"))
+        g = g.reindex([o for o in order if o in g.index]).astype(int)
+        return g.rename_axis(col).reset_index()
+
+    rule_order = ["list", "paperN", "word", "empty"]
+    by_rule = rows["rule"].value_counts().reindex([r for r in rule_order if r in set(rows["rule"])])
+    return {
+        "by_rule": by_rule.rename_axis("rule").reset_index(name="rows"),
+        "by_conference": by("conference", _year_order(rows["conference"])),
+        "by_cosi": by("label", [*dict.fromkeys(cosis), UNMAPPED]),
+        "rows": len(rows),
+        "in_training": int(rows["in_training"].sum()),
+    }
+
+
+def placeholder_section(raw, kept, cosis):
+    ph = placeholder_counts(raw, kept, cosis)
+    lines = ["## Placeholder titles", "",
+             "Titles that are agenda placeholders (D11 on #14): an exact key (tba, tbd, tbc, qa, closingremarks, "
+             "openingremarks, welcome), paper + number (e.g. paper12), an empty key, or TBA/TBD/TBC as a separate word. "
+             "Rows after "
+             "reject removal; titles are not shown. Detection only: removing them from training is #8.", ""]
+    if ph["rows"] == 0:
+        return lines + ["None", ""]
+    by_cosi = ph["by_cosi"].rename(columns={"label": "COSI"})
+    return lines + [
+        f"Placeholder rows: {ph['rows']:,} after reject removal; {ph['in_training']:,} reach training.", "",
+        md_table(ph["by_rule"]), "", md_table(ph["by_conference"]), "", md_table(by_cosi), ""]
 
 
 def build_report(paths, cosis, latest=None):
@@ -265,6 +403,8 @@ def build_report(paths, cosis, latest=None):
         "",
         *cosi_section(kept, cosis, latest),
         *unmapped_section(raw, cosis, stages),
+        *duplicate_section(raw, cosis),
+        *placeholder_section(raw, kept, cosis),
         "## Missing or empty fields",
         "",
         "Share of rows whose field is empty, blank or absent, measured before blanks are filled.",
@@ -284,10 +424,14 @@ def build_report(paths, cosis, latest=None):
 def details_table(raw, kept, cosis):
     """One row per loaded record. Contains titles, so it must stay out of git (cache/ is ignored).
     `row` counts within `source_file`, which is the file's basename, so input files are assumed to have
-    distinct names."""
+    distinct names. `placeholder` is evaluated on every row (rejected ones too); combine it with `in_training`
+    or a non-empty `label` to reproduce the report's counts. `dup_same_cosi` and `dup_multi_cosi` are only
+    evaluated for rows that reach the dedupe step (not rejected, mapped) and are False for all others."""
     flags = missing_flags(raw)
     label = raw["trackname"].map(make_normalizer(cosis))  # mapped COSI, also for rows later dropped
     title = raw["title"] if "title" in raw else pd.Series("", index=raw.index)
+    dedupe_rows = _dedupe_rows(raw, cosis)
+    same, multi = _duplicate_masks(dedupe_rows)
     return pd.DataFrame({
         "source_file": raw["source_file"],
         "row": raw.groupby("source_file").cumcount() + 1,
@@ -298,6 +442,10 @@ def details_table(raw, kept, cosis):
         "title_missing": flags["title"],
         "keywords_missing": flags["keywords"],
         "abstract_missing": flags["abstract"],
+        "title_key": title.map(title_key),
+        "placeholder": title.map(placeholder_rule),
+        "dup_same_cosi": same.reindex(raw.index, fill_value=False),
+        "dup_multi_cosi": multi.reindex(raw.index, fill_value=False),
         "title": title.fillna(""),
     })
 

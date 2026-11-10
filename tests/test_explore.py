@@ -377,3 +377,147 @@ def test_unmapped_order_ties_unknown_and_aliases(fixture_dir, cosis, tmp_path):
     assert table.values.tolist() == [["LATAM2024", "Track A", 3], ["LATAM2024", "Track B", 3],
                                      ["LATAM2024", "Track C", 1], ["ISMB2026", "General", 1],
                                      ["(unknown)", "Misc", 1]]
+
+
+# --- #14: Duplicate and placeholder titles -------------------------------------------------------------
+
+def test_title_key_matches_eval_set_norm_title():
+    assert explore.title_key("Deep Learning for Gene Regulation!") == "deeplearningforgeneregulation"
+    assert explore.title_key("Q&A") == "qa"
+    assert explore.title_key(None) == ""
+    assert explore.title_key(float("nan")) == ""
+
+
+@pytest.mark.parametrize("title, rule", [
+    ("TBA", "list"), ("tbd.", "list"), ("TBC", "list"), ("Q&A", "list"), ("Closing Remarks", "list"),
+    ("Opening remarks", "list"), ("Welcome", "list"),
+    ("Paper 12", "paperN"), ("paper3", "paperN"),
+    ("", "empty"), ("   ", "empty"), (None, "empty"), ("!!!", "empty"),
+    ("Keynote: TBA", "word"), ("Session tbd", "word"),
+    ("Dataset based protein design", ""),       # "datasetbased" contains "tba", but not as a word
+    ("Keynote: Protein folding at scale", ""),  # keynotes with real titles are not placeholders
+    ("Closing remarks and outlook on single-cell biology", ""),
+    ("TBAseq: a new assay", ""),
+])
+def test_placeholder_rule(title, rule):
+    assert explore.placeholder_rule(title) == rule
+
+
+# Fixture duplicates at the dedupe step (12 rows after reject and unmapped removal), worked out by hand:
+#   exact title + same COSI: "Mining biomedical literature" x2 and the two blank BioVis titles -> 2 groups, 2 extra
+#   same key + same COSI (all years, empty keys left out): "Mining..." x2, "Deep learning..." 2025 + 2026 -> 2 / 2
+#   same key + different COSIs (same year): "Protein language models" (3DSIG + MLCSB, 2026) -> 1 group, 2 rows
+
+def test_duplicate_counts_on_fixtures(fixture_dir, cosis):
+    table, multi_placeholders = explore.duplicate_counts(explore.load_raw([fixture_dir]), cosis)
+    assert table.loc["exact title, same COSI"].tolist() == [2, 4, 2]
+    assert table.loc["same key, same COSI"].tolist() == [2, 4, 2]
+    assert table.loc["same key, different COSIs (same year)", ["groups", "rows"]].tolist() == [1, 2]
+    assert multi_placeholders == 0
+
+
+def test_exact_duplicates_equal_the_filter_step(fixture_dir, cosis):
+    raw = explore.load_raw([fixture_dir])
+    _, stages = explore.filter_raw(raw, cosis)
+    removed = explore.funnel_table(stages).set_index("step").loc["after duplicate removal", "removed"]
+    table, _ = explore.duplicate_counts(raw, cosis)
+    assert table.loc["exact title, same COSI", "extra rows"] == removed
+
+
+def _placeholder_data(tmp_path):
+    # "TBA" under two COSIs (2025), "Q&A" (2026), an unmapped "Keynote: TBA", a rejected "TBD", a real paper.
+    data = tmp_path / "ph"
+    data.mkdir()
+    (data / "a.csv").write_text("title,trackname,decision,conference\n"
+                                "TBA,MLCSB,accept,ISMB2025\n"
+                                "TBA,3DSIG,accept,ISMB2025\n"
+                                "Q&A,BioVis,accept,ISMB2026\n"
+                                "Keynote: TBA,General Track,accept,GLBIO2025\n"
+                                "TBD,MLCSB,reject,ISMB2026\n"
+                                "Real paper on proteins,MLCSB,accept,ISMB2026\n")
+    return str(data)
+
+
+def test_placeholder_counts(cosis, tmp_path):
+    raw = explore.load_raw([_placeholder_data(tmp_path)])
+    kept, _ = explore.filter_raw(raw, cosis)
+    ph = explore.placeholder_counts(raw, kept, cosis)
+    assert ph["by_rule"].values.tolist() == [["list", 3], ["word", 1]]
+    assert ph["by_conference"].values.tolist() == [["GLBIO2025", 1, 0], ["ISMB2025", 2, 2], ["ISMB2026", 1, 1]]
+    assert ph["by_cosi"].values.tolist() == [["3DSIG", 1, 1], ["MLCSB", 1, 1], ["BioVis", 1, 1],
+                                             ["(unmapped)", 1, 0]]
+    assert ph["by_cosi"]["rows"].sum() == ph["by_conference"]["rows"].sum() == ph["rows"]
+    assert (ph["rows"], ph["in_training"]) == (4, 3)
+
+
+def test_placeholder_under_two_cosis_is_a_multi_cosi_group(cosis, tmp_path):
+    table, multi_placeholders = explore.duplicate_counts(explore.load_raw([_placeholder_data(tmp_path)]), cosis)
+    assert table.loc["same key, different COSIs (same year)", ["groups", "rows"]].tolist() == [1, 2]
+    assert multi_placeholders == 1
+
+
+def test_detection_does_not_change_training(fixture_dir, cosis, tmp_path):
+    from train import load_training_data
+    data = _placeholder_data(tmp_path)
+    before = load_training_data([data, fixture_dir], cosis)
+    run_args(fixture_dir, tmp_path, data, fixture_dir)
+    pd.testing.assert_frame_equal(load_training_data([data, fixture_dir], cosis), before)
+
+
+def test_report_duplicate_and_placeholder_sections_hold_no_titles(fixture_dir, tmp_path):
+    data = _placeholder_data(tmp_path)
+    report = run_args(fixture_dir, tmp_path, data)
+    assert report.index("## Unmapped tracks") < report.index("## Duplicate titles") < report.index(
+        "## Placeholder titles") < report.index("## Missing or empty fields")
+    assert "| same key, different COSIs (same year) | 1 | 2 | - |" in report
+    assert "| list | 3 |" in report and "| word | 1 |" in report
+    assert "Placeholder rows: 4 after reject removal; 3 reach training." in report
+    for title in ("Keynote: TBA", "Q&A", "Real paper on proteins"):
+        assert title not in report
+
+
+def test_details_has_duplicate_and_placeholder_columns(fixture_dir, tmp_path):
+    _, details = run(fixture_dir, tmp_path)
+    assert {"title_key", "placeholder", "dup_same_cosi", "dup_multi_cosi"} <= set(details.columns)
+    flag = lambda col: details[col].astype(str).str.lower().eq("true")
+    assert flag("dup_same_cosi").sum() == 4
+    assert flag("dup_multi_cosi").sum() == 2
+    assert (details["placeholder"] == "empty").sum() == 2
+
+
+def test_word_rule_placeholder_group_is_counted(cosis, tmp_path):
+    # "Keynote: TBA" only matches through the word rule on the original title; its key is "keynotetba".
+    data = tmp_path / "kw"
+    data.mkdir()
+    (data / "a.csv").write_text("title,trackname,conference\nKeynote: TBA,MLCSB,ISMB2025\nKeynote - TBA!,3DSIG,ISMB2025\n")
+    table, multi_placeholders = explore.duplicate_counts(explore.load_raw([str(data)]), cosis)
+    assert table.loc["same key, different COSIs (same year)", "groups"] == 1
+    assert multi_placeholders == 1
+
+
+def test_undated_conferences_are_not_pooled(cosis, tmp_path):
+    data = tmp_path / "nd"
+    data.mkdir()
+    (data / "a.csv").write_text("title,trackname,conference\n"
+                                "Shared talk,MLCSB,Workshop\n"
+                                "Shared talk,3DSIG,\n"
+                                "Same venue talk,MLCSB,Workshop\n"
+                                "Same venue talk,BioVis,Workshop\n")
+    table, _ = explore.duplicate_counts(explore.load_raw([str(data)]), cosis)
+    # Only "Same venue talk" is a multi-COSI group: "Workshop" and (unknown) are different undated venues.
+    assert table.loc["same key, different COSIs (same year)", ["groups", "rows"]].tolist() == [1, 2]
+
+
+def _eval_set_norm_title():
+    import importlib.util
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "experiments", "eval_set.py")
+    spec = importlib.util.spec_from_file_location("eval_set", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod.norm_title
+
+
+@pytest.mark.parametrize("title", ["Deep Learning for Gene Regulation!", "Q&A", "  TBA  ", "Paper #12",
+                                   "snake_case_title", "Ünïcödé títle", "3D-SIG: structures (2025)", ""])
+def test_title_key_equals_norm_title_for_titles(title):
+    assert explore.title_key(title) == _eval_set_norm_title()(title)
