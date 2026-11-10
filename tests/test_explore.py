@@ -401,3 +401,83 @@ def test_title_key_matches_eval_set_norm_title():
 ])
 def test_placeholder_rule(title, rule):
     assert explore.placeholder_rule(title) == rule
+
+
+# Fixture duplicates at the dedupe step (12 rows after reject and unmapped removal), worked out by hand:
+#   exact title + same COSI: "Mining biomedical literature" x2 and the two blank BioVis titles -> 2 groups, 2 extra
+#   same key + same COSI (all years, empty keys left out): "Mining..." x2, "Deep learning..." 2025 + 2026 -> 2 / 2
+#   same key + different COSIs (same year): "Protein language models" (3DSIG + MLCSB, 2026) -> 1 group, 2 rows
+
+def test_duplicate_counts_on_fixtures(fixture_dir, cosis):
+    table, multi_placeholders = explore.duplicate_counts(explore.load_raw([fixture_dir]), cosis)
+    assert table.loc["exact title, same COSI"].tolist() == [2, 4, 2]
+    assert table.loc["same key, same COSI"].tolist() == [2, 4, 2]
+    assert table.loc["same key, different COSIs (same year)", ["groups", "rows"]].tolist() == [1, 2]
+    assert multi_placeholders == 0
+
+
+def test_exact_duplicates_equal_the_filter_step(fixture_dir, cosis):
+    raw = explore.load_raw([fixture_dir])
+    _, stages = explore.filter_raw(raw, cosis)
+    removed = explore.funnel_table(stages).set_index("step").loc["after duplicate removal", "removed"]
+    table, _ = explore.duplicate_counts(raw, cosis)
+    assert table.loc["exact title, same COSI", "extra rows"] == removed
+
+
+def _placeholder_data(tmp_path):
+    # "TBA" under two COSIs (2025), "Q&A" (2026), an unmapped "Keynote: TBA", a rejected "TBD", a real paper.
+    data = tmp_path / "ph"
+    data.mkdir()
+    (data / "a.csv").write_text("title,trackname,decision,conference\n"
+                                "TBA,MLCSB,accept,ISMB2025\n"
+                                "TBA,3DSIG,accept,ISMB2025\n"
+                                "Q&A,BioVis,accept,ISMB2026\n"
+                                "Keynote: TBA,General Track,accept,GLBIO2025\n"
+                                "TBD,MLCSB,reject,ISMB2026\n"
+                                "Real paper on proteins,MLCSB,accept,ISMB2026\n")
+    return str(data)
+
+
+def test_placeholder_counts(cosis, tmp_path):
+    raw = explore.load_raw([_placeholder_data(tmp_path)])
+    kept, _ = explore.filter_raw(raw, cosis)
+    ph = explore.placeholder_counts(raw, kept, cosis)
+    assert ph["by_rule"].values.tolist() == [["list", 3], ["word", 1]]
+    assert ph["by_conference"].values.tolist() == [["GLBIO2025", 1, 0], ["ISMB2025", 2, 2], ["ISMB2026", 1, 1]]
+    assert ph["by_cosi"].values.tolist() == [["3DSIG", 1, 1], ["MLCSB", 1, 1], ["BioVis", 1, 1]]
+    assert (ph["rows"], ph["in_training"]) == (4, 3)
+
+
+def test_placeholder_under_two_cosis_is_a_multi_cosi_group(cosis, tmp_path):
+    table, multi_placeholders = explore.duplicate_counts(explore.load_raw([_placeholder_data(tmp_path)]), cosis)
+    assert table.loc["same key, different COSIs (same year)", ["groups", "rows"]].tolist() == [1, 2]
+    assert multi_placeholders == 1
+
+
+def test_detection_does_not_change_training(fixture_dir, cosis, tmp_path):
+    from train import load_training_data
+    data = _placeholder_data(tmp_path)
+    before = load_training_data([data, fixture_dir], cosis)
+    run_args(fixture_dir, tmp_path, data, fixture_dir)
+    pd.testing.assert_frame_equal(load_training_data([data, fixture_dir], cosis), before)
+
+
+def test_report_duplicate_and_placeholder_sections_hold_no_titles(fixture_dir, tmp_path):
+    data = _placeholder_data(tmp_path)
+    report = run_args(fixture_dir, tmp_path, data)
+    assert report.index("## Unmapped tracks") < report.index("## Duplicate titles") < report.index(
+        "## Placeholder titles") < report.index("## Missing or empty fields")
+    assert "| same key, different COSIs (same year) | 1 | 2 | - |" in report
+    assert "| list | 3 |" in report and "| word | 1 |" in report
+    assert "Placeholder rows: 4 after reject removal; 3 reach training." in report
+    for title in ("Keynote: TBA", "Q&A", "Real paper on proteins"):
+        assert title not in report
+
+
+def test_details_has_duplicate_and_placeholder_columns(fixture_dir, tmp_path):
+    _, details = run(fixture_dir, tmp_path)
+    assert {"title_key", "placeholder", "dup_same_cosi", "dup_multi_cosi"} <= set(details.columns)
+    flag = lambda col: details[col].astype(str).str.lower().eq("true")
+    assert flag("dup_same_cosi").sum() == 4
+    assert flag("dup_multi_cosi").sum() == 2
+    assert (details["placeholder"] == "empty").sum() == 2
