@@ -1,0 +1,8 @@
+vt.idd:task: T004
+vt.idd:domain: backend
+vt.idd:agents: claude(coder,self-review)
+vt.idd:files: explore.py
+vt.idd:tdd: red=6 failed in T003 (the T003 note said 8 by mistake), green=74 passed (-W error)
+vt.idd:satisfies: full
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-11-09T22:06:17-06:00
