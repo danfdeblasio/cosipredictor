@@ -238,11 +238,21 @@ def placeholder_rule(title):
     return ""
 
 
+def _after_reject(raw, cosis):
+    """The rows that survive reject removal, with `label` (the mapped COSI, NaN when the track maps to none)
+    and `_title` (None when there is no title column). Same reject rule and COSI mapping as
+    filter_training_data; the unmapped, duplicate and placeholder sections all start from here."""
+    rows = raw[~rejected_mask(raw)].copy()
+    rows["label"] = rows["trackname"].map(make_normalizer(cosis))
+    rows["_title"] = rows["title"] if "title" in rows else None
+    return rows
+
+
 def unmapped_tracks(raw, cosis):
     """Rows per conference and raw track name for tracks that map to no COSI, after reject removal.
     Same reject rule and COSI mapping as filter_training_data, so the total equals its unmapped step."""
-    kept = raw[~rejected_mask(raw)]
-    unmapped = kept[kept["trackname"].map(make_normalizer(cosis)).isna()]
+    rows = _after_reject(raw, cosis)
+    unmapped = rows[rows["label"].isna()]
     track = unmapped["trackname"].map(lambda t: BLANK if pd.isna(t) or not str(t).strip() else str(t))
     counts = (pd.DataFrame({"conference": unmapped["conference"], "track": track})
               .value_counts().rename("rows").reset_index())
@@ -269,11 +279,9 @@ def unmapped_section(raw, cosis, stages):
 
 def _dedupe_rows(raw, cosis):
     """The rows that reach the dedupe step (not rejected, mapped to a COSI), with `label`, `key` and `year`."""
-    rows = raw[~rejected_mask(raw)].copy()
-    rows["label"] = rows["trackname"].map(make_normalizer(cosis))
+    rows = _after_reject(raw, cosis)
     rows = rows[rows["label"].notna()].copy()
-    title = rows["title"] if "title" in rows else pd.Series(None, index=rows.index)
-    rows["key"] = title.map(title_key)
+    rows["key"] = rows["_title"].map(title_key)
     rows["year"] = rows["conference"].map(_label_year)
     # Multi-COSI groups are formed within a conference year; a label with no year is its own group, so two
     # different undated conferences are never pooled together.
@@ -297,7 +305,7 @@ def duplicate_counts(raw, cosis):
     """(table of groups / rows / extra rows per duplicate class, number of multi-COSI groups whose title is a
     placeholder). The exact class uses the raw title, as train.py's dedupe does (blank titles count as equal)."""
     rows = _dedupe_rows(raw, cosis)
-    title = rows["title"] if "title" in rows else pd.Series(None, index=rows.index)
+    title = rows["_title"]
     exact = rows.assign(_t=title).groupby(["_t", "label"], dropna=False).size()
     exact = exact[exact > 1]
     same_mask, multi_mask = _duplicate_masks(rows)
@@ -320,7 +328,8 @@ def duplicate_section(raw, cosis):
     return ["## Duplicate titles", "",
             "Rows that reach the dedupe step. The key is the title in lowercase without punctuation or spaces. "
             "Same-COSI classes span all years, as train.py's dedupe does; the multi-COSI class is counted "
-            "within a conference year. Titles with an empty key are counted as placeholders instead.", "",
+            "within a conference year. Titles with an empty key are left out of the two key classes and counted as "
+            "placeholders; the exact-title class counts them as equal, as train.py does.", "",
             md_table(table, index_name="class"), "",
             f"Multi-COSI groups with a placeholder title: {multi_placeholders}.", ""]
 
@@ -329,12 +338,11 @@ def placeholder_counts(raw, kept, cosis):
     """Placeholder rows after reject removal: by rule, by conference and by COSI (tracks that map to no COSI
     in an "(unmapped)" row, so every table adds up to the total), each with how many reach training (the
     rows in `kept`)."""
-    rows = raw[~rejected_mask(raw)].copy()
-    title = rows["title"] if "title" in rows else pd.Series(None, index=rows.index)
-    rows["rule"] = title.map(placeholder_rule)
+    rows = _after_reject(raw, cosis)
+    rows["rule"] = rows["_title"].map(placeholder_rule)
     rows = rows[rows["rule"] != ""].copy()
     rows["in_training"] = rows.index.isin(kept.index)
-    rows["label"] = rows["trackname"].map(make_normalizer(cosis)).fillna(UNMAPPED)
+    rows["label"] = rows["label"].fillna(UNMAPPED)
 
     def by(col, order):
         g = rows.groupby(col).agg(rows=("rule", "size"), in_training=("in_training", "sum"))
