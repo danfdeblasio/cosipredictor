@@ -363,3 +363,17 @@ def test_no_unmapped_tracks_says_none(fixture_dir, tmp_path):
     report = run_args(fixture_dir, tmp_path, str(data))
     section = report.split("## Unmapped tracks", 1)[1].split("## ", 1)[0]
     assert "None" in section and "|" not in section
+
+
+def test_unmapped_order_ties_unknown_and_aliases(fixture_dir, cosis, tmp_path):
+    # Within a conference: rows high to low, then name. Conferences by year (LATAM2024 before ISMB2026,
+    # although "L" sorts after "I"), (unknown) last. "RNA COSI" is an alias of iRNA, so it is mapped.
+    data = tmp_path / "data"
+    data.mkdir()
+    rows = (["Talk,Track B,LATAM2024"] * 3 + ["Talk,Track A,LATAM2024"] * 3 + ["Talk,Track C,LATAM2024",
+            "Talk,General,ISMB2026", "Talk,Misc,", "Talk,RNA COSI,ISMB2026"])
+    (data / "a.csv").write_text("title,trackname,conference\n" + "\n".join(rows) + "\n")
+    table = explore.unmapped_tracks(explore.load_raw([str(data)]), cosis)
+    assert table.values.tolist() == [["LATAM2024", "Track A", 3], ["LATAM2024", "Track B", 3],
+                                     ["LATAM2024", "Track C", 1], ["ISMB2026", "General", 1],
+                                     ["(unknown)", "Misc", 1]]
