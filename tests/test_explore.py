@@ -444,7 +444,9 @@ def test_placeholder_counts(cosis, tmp_path):
     ph = explore.placeholder_counts(raw, kept, cosis)
     assert ph["by_rule"].values.tolist() == [["list", 3], ["word", 1]]
     assert ph["by_conference"].values.tolist() == [["GLBIO2025", 1, 0], ["ISMB2025", 2, 2], ["ISMB2026", 1, 1]]
-    assert ph["by_cosi"].values.tolist() == [["3DSIG", 1, 1], ["MLCSB", 1, 1], ["BioVis", 1, 1]]
+    assert ph["by_cosi"].values.tolist() == [["3DSIG", 1, 1], ["MLCSB", 1, 1], ["BioVis", 1, 1],
+                                             ["(unmapped)", 1, 0]]
+    assert ph["by_cosi"]["rows"].sum() == ph["by_conference"]["rows"].sum() == ph["rows"]
     assert (ph["rows"], ph["in_training"]) == (4, 3)
 
 
@@ -504,3 +506,18 @@ def test_undated_conferences_are_not_pooled(cosis, tmp_path):
     table, _ = explore.duplicate_counts(explore.load_raw([str(data)]), cosis)
     # Only "Same venue talk" is a multi-COSI group: "Workshop" and (unknown) are different undated venues.
     assert table.loc["same key, different COSIs (same year)", ["groups", "rows"]].tolist() == [1, 2]
+
+
+def _eval_set_norm_title():
+    import importlib.util
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "experiments", "eval_set.py")
+    spec = importlib.util.spec_from_file_location("eval_set", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod.norm_title
+
+
+@pytest.mark.parametrize("title", ["Deep Learning for Gene Regulation!", "Q&A", "  TBA  ", "Paper #12",
+                                   "snake_case_title", "Ünïcödé títle", "3D-SIG: structures (2025)", ""])
+def test_title_key_equals_norm_title_for_titles(title):
+    assert explore.title_key(title) == _eval_set_norm_title()(title)

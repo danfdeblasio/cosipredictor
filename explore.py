@@ -2,9 +2,10 @@
 
 The report holds aggregate counts and conference, track and COSI names only: files, records per
 conference, the training-data filtering steps, training rows per COSI and conference with the COSIs that
-have no (recent) rows, the unmapped track names per conference, and missing or empty fields per
-conference. Per-record rows, titles included, go to the details CSV, which lives under the
-gitignored cache/ by default.
+have no (recent) rows, the unmapped track names per conference, duplicate-title classes, placeholder-title
+counts (no titles shown), and missing or empty fields per conference. Per-record rows, titles included, go
+to the details CSV under the gitignored cache/ by default; besides the per-row flags it has the columns
+title_key, placeholder, dup_same_cosi and dup_multi_cosi.
 
 Examples:
     python explore.py "~/Downloads/ISCB accepted submissions" --cosis cosis.txt
@@ -206,6 +207,7 @@ def cosi_section(train_rows, cosis, latest=None):
 
 
 BLANK = "(blank)"
+UNMAPPED = "(unmapped)"
 
 # Placeholder titles (D11, decided by @eri2905 on #14): exact title keys, "paper<N>", an empty key, or
 # TBA/TBD/TBC as a separate word in the original title. Removing them from training is #8.
@@ -215,8 +217,8 @@ _TBX_WORD = re.compile(r"\b(tba|tbd|tbc)\b", re.IGNORECASE)
 
 
 def title_key(title):
-    """A title's key: lowercase with every non-alphanumeric character removed (same as norm_title in
-    experiments/eval_set.py). Missing titles give ""."""
+    """A title's key: lowercase with every non-alphanumeric character removed. Same as norm_title in
+    experiments/eval_set.py for any title; unlike it, a missing title (None/NaN) gives "" instead of "nan"."""
     if title is None or (isinstance(title, float) and pd.isna(title)):
         return ""
     return re.sub(r"[^a-z0-9]", "", str(title).lower())
@@ -324,14 +326,15 @@ def duplicate_section(raw, cosis):
 
 
 def placeholder_counts(raw, kept, cosis):
-    """Placeholder rows after reject removal: by rule, by conference and by COSI (mapped rows only), each with
-    how many reach training (the rows in `kept`)."""
+    """Placeholder rows after reject removal: by rule, by conference and by COSI (tracks that map to no COSI
+    in an "(unmapped)" row, so every table adds up to the total), each with how many reach training (the
+    rows in `kept`)."""
     rows = raw[~rejected_mask(raw)].copy()
     title = rows["title"] if "title" in rows else pd.Series(None, index=rows.index)
     rows["rule"] = title.map(placeholder_rule)
     rows = rows[rows["rule"] != ""].copy()
     rows["in_training"] = rows.index.isin(kept.index)
-    rows["label"] = rows["trackname"].map(make_normalizer(cosis))
+    rows["label"] = rows["trackname"].map(make_normalizer(cosis)).fillna(UNMAPPED)
 
     def by(col, order):
         g = rows.groupby(col).agg(rows=("rule", "size"), in_training=("in_training", "sum"))
@@ -343,7 +346,7 @@ def placeholder_counts(raw, kept, cosis):
     return {
         "by_rule": by_rule.rename_axis("rule").reset_index(name="rows"),
         "by_conference": by("conference", _year_order(rows["conference"])),
-        "by_cosi": by("label", list(dict.fromkeys(cosis))),
+        "by_cosi": by("label", [*dict.fromkeys(cosis), UNMAPPED]),
         "rows": len(rows),
         "in_training": int(rows["in_training"].sum()),
     }
@@ -413,7 +416,9 @@ def build_report(paths, cosis, latest=None):
 def details_table(raw, kept, cosis):
     """One row per loaded record. Contains titles, so it must stay out of git (cache/ is ignored).
     `row` counts within `source_file`, which is the file's basename, so input files are assumed to have
-    distinct names."""
+    distinct names. `placeholder` is evaluated on every row (rejected ones too); combine it with `in_training`
+    or a non-empty `label` to reproduce the report's counts. `dup_same_cosi` and `dup_multi_cosi` are only
+    evaluated for rows that reach the dedupe step (not rejected, mapped) and are False for all others."""
     flags = missing_flags(raw)
     label = raw["trackname"].map(make_normalizer(cosis))  # mapped COSI, also for rows later dropped
     title = raw["title"] if "title" in raw else pd.Series("", index=raw.index)
