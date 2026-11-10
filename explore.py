@@ -1,8 +1,9 @@
 """Write the data-exploration (EDA) report for the submission CSVs.
 
-The report holds aggregate counts only: files, records per conference, the training-data filtering steps,
-training rows per COSI and conference with the COSIs that have no (recent) rows, and missing or empty
-fields per conference. Per-record rows, titles included, go to the details CSV, which lives under the
+The report holds aggregate counts and conference, track and COSI names only: files, records per
+conference, the training-data filtering steps, training rows per COSI and conference with the COSIs that
+have no (recent) rows, the unmapped track names per conference, and missing or empty fields per
+conference. Per-record rows, titles included, go to the details CSV, which lives under the
 gitignored cache/ by default.
 
 Examples:
@@ -226,7 +227,8 @@ def unmapped_section(raw, cosis, stages):
     so the total line shows the filter's own number next to this section's."""
     table = unmapped_tracks(raw, cosis)
     lines = ["## Unmapped tracks", "",
-             "Tracks that map to no COSI, after reject removal (track names as they appear in the data).", ""]
+             "Tracks that map to no COSI, after reject removal. Track names are shown as they appear in the "
+             "data, so names that differ only in spacing or case are listed separately.", ""]
     if table.empty:
         return lines + ["None", ""]
     total = int(table["rows"].sum())
