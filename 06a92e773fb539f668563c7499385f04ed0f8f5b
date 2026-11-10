@@ -14,3 +14,11 @@ vt.idd:files: explore.py
 vt.idd:satisfies: full (Real data: exact 233 (= funnel), key same-COSI 250 extra, multi-COSI 14 groups (= PR #7; 5 placeholder), placeholders 80 after reject / 31 reach training (= #14 review); other sections and old details columns unchanged; privacy: only 'Proceedings' (known track name))
 vt.idd:wave: 2
 vt.idd:timestamp: 2026-11-09T22:06:49-06:00
+
+vt.idd:task: T006
+vt.idd:domain: backend
+vt.idd:agents: claude
+vt.idd:files: train.py
+vt.idd:satisfies: full (Real data: 9103 records; log identical to #9 baseline except model path)
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-11-09T22:07:53-06:00
