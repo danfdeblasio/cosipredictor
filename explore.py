@@ -207,6 +207,34 @@ def cosi_section(train_rows, cosis, latest=None):
 
 BLANK = "(blank)"
 
+# Placeholder titles (D11, decided by @eri2905 on #14): exact title keys, "paper<N>", an empty key, or
+# TBA/TBD/TBC as a separate word in the original title. Removing them from training is #8.
+PLACEHOLDER_KEYS = {"tba", "tbd", "tbc", "qa", "closingremarks", "openingremarks", "welcome"}
+_PAPER_N = re.compile(r"paper\d+")
+_TBX_WORD = re.compile(r"\b(tba|tbd|tbc)\b", re.IGNORECASE)
+
+
+def title_key(title):
+    """A title's key: lowercase with every non-alphanumeric character removed (same as norm_title in
+    experiments/eval_set.py). Missing titles give ""."""
+    if title is None or (isinstance(title, float) and pd.isna(title)):
+        return ""
+    return re.sub(r"[^a-z0-9]", "", str(title).lower())
+
+
+def placeholder_rule(title):
+    """The placeholder rule a title matches ("list", "paperN", "empty" or "word"), or "" for a real title."""
+    key = title_key(title)
+    if key == "":
+        return "empty"
+    if key in PLACEHOLDER_KEYS:
+        return "list"
+    if _PAPER_N.fullmatch(key):
+        return "paperN"
+    if _TBX_WORD.search(str(title)):
+        return "word"
+    return ""
+
 
 def unmapped_tracks(raw, cosis):
     """Rows per conference and raw track name for tracks that map to no COSI, after reject removal.
