@@ -273,6 +273,9 @@ def _dedupe_rows(raw, cosis):
     title = rows["title"] if "title" in rows else pd.Series(None, index=rows.index)
     rows["key"] = title.map(title_key)
     rows["year"] = rows["conference"].map(_label_year)
+    # Multi-COSI groups are formed within a conference year; a label with no year is its own group, so two
+    # different undated conferences are never pooled together.
+    rows["year_group"] = [str(y) if y is not None else f"label:{c}" for y, c in zip(rows["year"], rows["conference"])]
     return rows
 
 
@@ -284,7 +287,7 @@ def _duplicate_masks(rows):
     Rows with an empty key are left out of both (D2)."""
     keyed = rows[rows["key"] != ""]
     same = keyed.groupby(["key", "label"])["key"].transform("size") > 1
-    multi = keyed.groupby(["year", "key"], dropna=False)["label"].transform("nunique") > 1
+    multi = keyed.groupby(["year_group", "key"])["label"].transform("nunique") > 1
     return (same.reindex(rows.index, fill_value=False), multi.reindex(rows.index, fill_value=False))
 
 
@@ -297,13 +300,16 @@ def duplicate_counts(raw, cosis):
     exact = exact[exact > 1]
     same_mask, multi_mask = _duplicate_masks(rows)
     same = rows[same_mask].groupby(["key", "label"]).size()
-    multi = rows[multi_mask].groupby(["year", "key"], dropna=False).size()
+    multi_rows = rows[multi_mask].assign(_ph=title[multi_mask].map(placeholder_rule) != "")
+    multi = multi_rows.groupby(["year_group", "key"]).size()
     table = pd.DataFrame(
         [[len(exact), int(exact.sum()), int((exact - 1).sum())],
          [len(same), int(same.sum()), int((same - 1).sum())],
          [len(multi), int(multi.sum()), "-"]],
         index=DUP_CLASSES, columns=["groups", "rows", "extra rows"])
-    multi_placeholders = sum(1 for _, key in multi.index if placeholder_rule(key))
+    # A group counts as a placeholder group when any of its rows' original titles is a placeholder (the
+    # "word" rule needs the original title, not the key).
+    multi_placeholders = int(multi_rows.groupby(["year_group", "key"])["_ph"].any().sum())
     return table, multi_placeholders
 
 

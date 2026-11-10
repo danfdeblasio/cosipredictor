@@ -481,3 +481,26 @@ def test_details_has_duplicate_and_placeholder_columns(fixture_dir, tmp_path):
     assert flag("dup_same_cosi").sum() == 4
     assert flag("dup_multi_cosi").sum() == 2
     assert (details["placeholder"] == "empty").sum() == 2
+
+
+def test_word_rule_placeholder_group_is_counted(cosis, tmp_path):
+    # "Keynote: TBA" only matches through the word rule on the original title; its key is "keynotetba".
+    data = tmp_path / "kw"
+    data.mkdir()
+    (data / "a.csv").write_text("title,trackname,conference\nKeynote: TBA,MLCSB,ISMB2025\nKeynote - TBA!,3DSIG,ISMB2025\n")
+    table, multi_placeholders = explore.duplicate_counts(explore.load_raw([str(data)]), cosis)
+    assert table.loc["same key, different COSIs (same year)", "groups"] == 1
+    assert multi_placeholders == 1
+
+
+def test_undated_conferences_are_not_pooled(cosis, tmp_path):
+    data = tmp_path / "nd"
+    data.mkdir()
+    (data / "a.csv").write_text("title,trackname,conference\n"
+                                "Shared talk,MLCSB,Workshop\n"
+                                "Shared talk,3DSIG,\n"
+                                "Same venue talk,MLCSB,Workshop\n"
+                                "Same venue talk,BioVis,Workshop\n")
+    table, _ = explore.duplicate_counts(explore.load_raw([str(data)]), cosis)
+    # Only "Same venue talk" is a multi-COSI group: "Workshop" and (unknown) are different undated venues.
+    assert table.loc["same key, different COSIs (same year)", ["groups", "rows"]].tolist() == [1, 2]
