@@ -6,3 +6,11 @@ vt.idd:tdd: red=6 failed in T003 (the T003 note said 8 by mistake), green=74 pas
 vt.idd:satisfies: full
 vt.idd:wave: 1
 vt.idd:timestamp: 2026-11-09T22:06:17-06:00
+
+vt.idd:task: T005
+vt.idd:domain: backend
+vt.idd:agents: claude
+vt.idd:files: explore.py
+vt.idd:satisfies: full (Real data: exact 233 (= funnel), key same-COSI 250 extra, multi-COSI 14 groups (= PR #7; 5 placeholder), placeholders 80 after reject / 31 reach training (= #14 review); other sections and old details columns unchanged; privacy: only 'Proceedings' (known track name))
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-11-09T22:06:49-06:00
