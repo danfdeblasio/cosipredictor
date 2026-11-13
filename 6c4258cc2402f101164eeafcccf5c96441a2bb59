@@ -1,0 +1,7 @@
+vt.idd:task: T004
+vt.idd:domain: documentation
+vt.idd:agents: claude
+vt.idd:files: reports/eda.md
+vt.idd:satisfies: full (Committed after approval; commands, environment and METHODS.md disagreements recorded in the PR)
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-11-13T08:21:16-06:00
