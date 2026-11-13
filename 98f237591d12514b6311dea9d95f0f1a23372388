@@ -5,3 +5,11 @@ vt.idd:files: reports/eda.md
 vt.idd:satisfies: full (Generated outside git: 8 sections, final count 9103 = train.py; train log identical to #9 baseline; privacy: 56,437 full values + 172,282 author names checked; only matches are track names (Final Accept Proceedings, Comparative and Functional Genomics, Systems Biology and Networks))
 vt.idd:wave: 0
 vt.idd:timestamp: 2026-11-13T08:06:07-06:00
+
+vt.idd:task: T002
+vt.idd:domain: documentation
+vt.idd:agents: claude
+vt.idd:files: METHODS.md
+vt.idd:satisfies: full (Matches: total 9103, MLCSB 1483/16.3%, BioInfo-Core 70/0.8%, keywords missing 12.9%. Disagreements: Table 1 2019 1136 vs 1134, 2020 877 vs 875 (ISMB2020 128 + ismb2020 749), 2021 766 vs 769, 2024 1090 vs 1091; keywords missing 2019 84.2% vs 84.1%. Cause not determined: 27 exact duplicate groups span two years (56 rows), so per-year counts depend on which copy is kept; keep-last does not reproduce Table 1 either)
+vt.idd:wave: 0
+vt.idd:timestamp: 2026-11-13T08:08:15-06:00
