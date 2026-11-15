@@ -16,7 +16,7 @@ for deploying the web app.
 | `predict_wikipedia.py`, `wiki.py` | Predict COSIs for a list of English Wikipedia articles |
 | `export_model.py` | Export `model.joblib` to the SQLite file used by the web app |
 | `top_terms.py` | Top 10 stems per COSI by mean TF-IDF, for the web app's vocabulary page (needs `nltk`) |
-| `compare.py`, `embed.py` | Comparison against SPECTER2 embeddings (optional; needs `transformers` and `adapters`) |
+| `compare.py`, `embed.py` | Comparison against SPECTER2 embeddings (optional; needs `transformers`, `adapters` and `torch`) |
 | `compare_stemming.py` | Comparison of the classifier with and without Porter stemming (needs `nltk`) |
 | `explore.py` | Data-exploration report from the submission CSVs (aggregates only) |
 | `common.py` | CSV loading, track-name normalization and the shared training-data filter |
