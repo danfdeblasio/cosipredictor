@@ -1,0 +1,7 @@
+vt.idd:task: T002
+vt.idd:domain: documentation
+vt.idd:agents: claude
+vt.idd:files: README.md
+vt.idd:satisfies: full (11 scripts: every row present, every argparse option mentioned, defaults stated (sentence added), extra deps match imports; intro (1-9) and Usage byte-identical; diff touches README.md only)
+vt.idd:wave: 0
+vt.idd:timestamp: 2026-11-14T22:30:19-06:00
