@@ -44,8 +44,10 @@ The training data (ISMB submission exports) is not included in this repository.
 ## Scripts
 
 Every runnable script takes `--help` (`wiki.py`, `embed.py` and `common.py` are libraries). Scripts that read submission data accept CSV files and/or directories of
-CSVs; files without a `trackname` column are skipped. Unless noted, they need only scikit-learn, pandas
-and joblib.
+CSVs; files without a `trackname` column are skipped. `--model` defaults to `model.joblib`. In the scripts
+that train or analyse (`train.py`, `top_terms.py`, `explore.py`, `compare.py`, `compare_stemming.py`),
+`--cosis` defaults to `cosis.txt`; in `predict.py` and `predict_wikipedia.py` it only restricts the
+suggestions to the COSIs given. Unless noted, the scripts need only scikit-learn, pandas and joblib.
 
 | Script | Purpose | Inputs | Outputs | Extra dependencies |
 |---|---|---|---|---|
