@@ -1,0 +1,7 @@
+vt.idd:task: T001
+vt.idd:domain: documentation
+vt.idd:agents: claude
+vt.idd:files: README.md
+vt.idd:satisfies: full
+vt.idd:wave: 0
+vt.idd:timestamp: 2026-11-14T22:30:03-06:00
