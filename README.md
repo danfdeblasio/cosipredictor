@@ -64,4 +64,6 @@ defaults to `model.joblib`. Unless noted, the scripts need only scikit-learn, pa
 | `compare_stemming.py` | Compare the classifier with and without Porter stemming, with a paired bootstrap | Submission CSVs; `--cosis`; `--holdout` (default `ISMB2026`); `--bootstrap` (default 1000) | Metrics and confidence intervals on stdout | `nltk` |
 | `common.py` | Library: CSV loading, track-name normalization (`ALIASES`) and `filter_training_data`, the training filter shared by `train.py` and `explore.py` | — | — | — |
 
-To run the tests: `pip install -r requirements-dev.txt` and then `pytest tests` (synthetic data only).
+To run the tests (synthetic data only), use Python 3.10 or newer, because one test loads
+`experiments/repro_counts.py`, which needs it. With the packages from Usage installed, run
+`pip install -r requirements-dev.txt` and then `pytest tests`.
