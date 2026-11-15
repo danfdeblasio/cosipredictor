@@ -43,24 +43,25 @@ The training data (ISMB submission exports) is not included in this repository.
 
 ## Scripts
 
-Every runnable script takes `--help` (`wiki.py`, `embed.py` and `common.py` are libraries). Scripts that read submission data accept CSV files and/or directories of
-CSVs; files without a `trackname` column are skipped. `--model` defaults to `model.joblib`. In the scripts
-that train or analyse (`train.py`, `top_terms.py`, `explore.py`, `compare.py`, `compare_stemming.py`),
-`--cosis` defaults to `cosis.txt`; in `predict.py` and `predict_wikipedia.py` it only restricts the
-suggestions to the COSIs given. Unless noted, the scripts need only scikit-learn, pandas and joblib.
+Every runnable script takes `--help` (`wiki.py`, `embed.py` and `common.py` are libraries). The
+scripts that read the training data (`train.py`, `top_terms.py`, `explore.py`, `compare.py`,
+`compare_stemming.py`) take submission CSVs: CSV files and/or directories of CSVs, where files without a
+`trackname` column are skipped. In those scripts `--cosis` defaults to `cosis.txt`; in `predict.py` and
+`predict_wikipedia.py` it only restricts the suggestions to the COSIs given (default: all). `--model`
+defaults to `model.joblib`. Unless noted, the scripts need only scikit-learn, pandas and joblib.
 
 | Script | Purpose | Inputs | Outputs | Extra dependencies |
 |---|---|---|---|---|
 | `train.py` | Train the COSI classifier (TF-IDF on title, keywords and abstract + logistic regression); with `--holdout`, first evaluate on one conference | Submission CSVs; `--cosis` (default `cosis.txt`); `--holdout` (e.g. `ISMB2026`) | `--out` model (default `model.joblib`); counts and held-out metrics on stdout | — |
-| `predict.py` | Rank COSIs for new submissions | A CSV with `title`, `keywords`, `abstract` (other columns pass through); `--model`; `--cosis` to restrict to this year's COSIs; `--top` | `--out` CSV (default `predictions.csv`) | — |
-| `predict_wikipedia.py` | Rank COSIs for English Wikipedia articles | Article titles or URLs as arguments and/or `--file`; `--scope lead\|full`; `--model`; `--cosis`; `--top`; `--delay` | `--out` CSV (default `wikipedia_predictions.csv`): one row per article with top suggestions and a probability per COSI | Internet access |
+| `predict.py` | Rank COSIs for new submissions | A CSV with `title`, `keywords`, `abstract` (other columns pass through); `--model`; `--cosis` to restrict to this year's COSIs; `--top` (default 3) | `--out` CSV (default `predictions.csv`): the input columns plus `predicted_track`, `track_k` and `prob_k` for k = 1 to `--top` | — |
+| `predict_wikipedia.py` | Rank COSIs for English Wikipedia articles | Article titles or URLs as arguments and/or `--file`; `--scope lead\|full` (default `lead`); `--model`; `--cosis`; `--top` (default 3); `--delay` between requests (default 0.2 s) | `--out` CSV (default `wikipedia_predictions.csv`): one row per article with top suggestions and a probability per COSI | Internet access |
 | `wiki.py` | Library used by `predict_wikipedia.py`: fetches an article and maps it to the model's fields (kept in sync with `web/lib/Wikipedia.php`) | — | — | Internet access |
 | `export_model.py` | Export the trained model for the PHP web app | `--model` (default `model.joblib`) | `--out` SQLite file (default `web/data/cosi_model.sqlite`) | — |
-| `top_terms.py` | Top stems per COSI by mean TF-IDF, for the web app's vocabulary page | Submission CSVs; `--cosis`; `--top`; `--min-df` | `--out` JSON (default `web/data/top_terms.json`) | `nltk` |
+| `top_terms.py` | Top stems per COSI by mean TF-IDF, for the web app's vocabulary page | Submission CSVs; `--cosis`; `--top` (default 10); `--min-df` (default 5) | `--out` JSON (default `web/data/top_terms.json`) | `nltk` |
 | `explore.py` | Data-exploration report: files, conferences, filtering steps, COSIs per conference, unmapped tracks, duplicate and placeholder titles, missing fields | Submission CSVs; `--cosis`; `--latest` (most recent ISMB conference; detected by default) | `--out` Markdown report (default `reports/eda.md`, aggregates only); `--details` per-record CSV (default `cache/eda_details.csv`, gitignored, contains titles) | — |
-| `compare.py` | Compare the TF-IDF model with SPECTER2-embedding classifiers on a held-out conference | Submission CSVs; `--cosis`; `--holdout` (default `ISMB2026`); `--adapters` | Metrics on stdout; embeddings cached in `--cache-dir` (default `cache/`) | `transformers`, `adapters`, `torch` |
-| `embed.py` | Library used by `compare.py`: SPECTER2 embeddings of title + keywords + abstract | — | — | `transformers`, `adapters`, `torch` |
-| `compare_stemming.py` | Compare the classifier with and without Porter stemming, with a paired bootstrap | Submission CSVs; `--cosis`; `--holdout`; `--bootstrap` | Metrics and confidence intervals on stdout | `nltk` |
+| `compare.py` | Compare the TF-IDF model with SPECTER2-embedding classifiers on a held-out conference | Submission CSVs; `--cosis`; `--holdout` (default `ISMB2026`); `--adapters` (default `proximity,classification`) | Metrics on stdout; embeddings cached in `--cache-dir` (default `cache/`) | `transformers`, `adapters`, `torch`; Internet access on first run (downloads SPECTER2 from Hugging Face) |
+| `embed.py` | Library used by `compare.py`: SPECTER2 embeddings of title + keywords + abstract | — | — | `transformers`, `adapters`, `torch`; Internet access on first run (downloads SPECTER2 from Hugging Face) |
+| `compare_stemming.py` | Compare the classifier with and without Porter stemming, with a paired bootstrap | Submission CSVs; `--cosis`; `--holdout` (default `ISMB2026`); `--bootstrap` (default 1000) | Metrics and confidence intervals on stdout | `nltk` |
 | `common.py` | Library: CSV loading, track-name normalization (`ALIASES`) and `filter_training_data`, the training filter shared by `train.py` and `explore.py` | — | — | — |
 
 To run the tests: `pip install -r requirements-dev.txt` and then `pytest tests` (synthetic data only).
