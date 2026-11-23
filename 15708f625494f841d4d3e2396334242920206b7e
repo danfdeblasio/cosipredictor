@@ -1,0 +1,7 @@
+vt.idd:task: T005
+vt.idd:domain: backend
+vt.idd:agents: claude
+vt.idd:files: experiments/wikipedia/fetch.py
+vt.idd:satisfies: full (live --limit 25 smoke run twice (resume works); records match wiki.fetch and the snapshot)
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-11-22T23:30:20-06:00
