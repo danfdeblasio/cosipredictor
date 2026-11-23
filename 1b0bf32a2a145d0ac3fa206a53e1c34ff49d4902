@@ -1,0 +1,8 @@
+vt.idd:task: T006
+vt.idd:domain: backend
+vt.idd:agents: claude
+vt.idd:files: experiments/wikipedia/evaluate.py,experiments/wikipedia/wikidata.py,tests/test_wikipedia.py
+vt.idd:tdd: red=3 errors: FileNotFoundError experiments/wikipedia/evaluate.py, green=35 passed; snapshot run reproduces prototype AUC 0.725/0.947 and Spearman 0.755
+vt.idd:satisfies: full
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-11-22T23:34:23-06:00
