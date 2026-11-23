@@ -88,6 +88,30 @@ python experiments/compare_multilabel.py "../data/ISCB accepted submissions"
 - Full report: [`results/multilabel_report.md`](results/multilabel_report.md); all thresholds:
   [`results/threshold_curve.csv`](results/threshold_curve.csv).
 
+## 4. Finding missing Wikipedia CompBio articles
+
+Tracked in [#25](https://github.com/danfdeblasio/cosipredictor/issues/25). Scripts in `experiments/wikipedia/`,
+run in this order (all take `--cache`, default `cache/wikipedia`, which is gitignored):
+
+```
+python experiments/wikipedia/collect.py            # needs Internet access
+python experiments/wikipedia/fetch.py              # needs Internet access; resumable
+python experiments/wikipedia/evaluate.py --model M
+python experiments/wikipedia/hideseek.py --model M
+python experiments/wikipedia/report.py   --model M
+```
+
+`--model` must be a COSI model that loads with the installed scikit-learn (`model.joblib` is saved with 1.6.1;
+retrain with `train.py` otherwise). The report, [`reports/wikipedia.md`](../reports/wikipedia.md), was built from the
+2026-11-20 snapshot with a model retrained under scikit-learn 1.8.0. The blind review sheet and its key are in
+`experiments/wikipedia/review/`.
+
+| Test | Dan's tool (top COSI score) | Classifier trained on Wikipedia |
+|---|---|---|
+| CompBio vs nearby fields (AUC) | 0.637 | 0.924 |
+| Hidden collection articles in the top 100 of 22,288 | 16 | 88 |
+| Blind review: top 50 labelled CompBio | 3 | 48 |
+
 ## Caveats and next steps
 
 - With no multi-COSI documents in the test set, the "multi-label" numbers measure how often the single accepted COSI
