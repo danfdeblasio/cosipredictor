@@ -266,3 +266,61 @@ def test_step1_classifier_learns(wd):
     m = wd.step1_classifier().fit(X, y)
     p = m.predict_proba(["sequence alignment software", "city football stadium"])[:, 1]
     assert p[0] > 0.5 > p[1]
+
+
+# --- collect.py ---------------------------------------------------------------
+
+@pytest.fixture(scope="module")
+def collect():
+    return _load("collect")
+
+
+def _toy_inputs():
+    coll = {f"{c}{i}": c for c in ["GA", "B", "C", "Start", "Stub"] for i in range(50)}
+    coll.update({"L1": "List", "R1": "Redirect"})
+    candidates = ["GA1", "Cand1", "Cand2", "List of things"]
+    near = {"Genetics": [f"Gen{i}" for i in range(20)] + ["B3"], "Statistics": [f"Stat{i}" for i in range(5)]}
+    pools = {"Genetics": near["Genetics"] + ["GenSub1"], "Statistics": near["Statistics"]}
+    rnd = [f"Rand{i}" for i in range(60)]
+    return coll, candidates, near, pools, rnd
+
+
+def test_build_sets_sizes_and_exclusions(collect):
+    coll, candidates, near, pools, rnd = _toy_inputs()
+    s = collect.build_sets(coll, candidates, near, pools, rnd)
+    assert {k: len(v) for k, v in s["pos"].items()} == {"GA": 12, "B": 40, "C": 40, "Start": 40, "Stub": 40}
+    assert len(s["near"]["Genetics"]) == 8 and len(s["near"]["Statistics"]) == 5
+    assert "B3" not in s["near"]["Genetics"]  # collection articles are never controls
+    assert s["easy"] == collect.wd.LONNIE_EXAMPLES and s["random"] == rnd
+    disc = set(s["discovery"])
+    negs = {t for v in s["near"].values() for t in v} | set(rnd) | set(s["easy"])
+    assert disc.isdisjoint(negs) and disc.isdisjoint(coll)
+    assert "List of things" not in disc and {"Cand1", "Cand2", "GenSub1"} <= disc
+    assert s["source"]["Cand1"] == collect.wd.BIOINFO_SOURCE and s["source"]["GenSub1"] == "Genetics"
+
+
+def test_build_sets_is_seeded(collect):
+    a = collect.build_sets(*_toy_inputs())
+    b = collect.build_sets(*_toy_inputs())
+    assert a == b
+
+
+def test_hidden_list(collect):
+    coll, *_ = _toy_inputs()
+    pos = {"GA": ["GA0"], "B": ["B0", "B1"]}
+    hidden = collect.hidden_list(coll, pos)
+    assert "B0" not in hidden and "B2" in hidden and "Stub7" in hidden
+    assert not any(coll[t] in ("GA", "List", "Redirect") for t in hidden)
+    assert hidden == sorted(hidden) and len(hidden) == 4 * 50 - 2
+
+
+def test_candidates_from_seed_categories(collect):
+    def api(params):
+        cat = params["cmtitle"]
+        if params.get("cmtype") == "subcat":
+            return {"query": {"categorymembers": [{"title": "Category:Sub"}] if cat == "Category:Bioinformatics" else []}}
+        names = {"Category:Bioinformatics": ["X", "Y"], "Category:Computational biology": ["Y", "Z"], "Category:Sub": ["W"]}
+        return {"query": {"categorymembers": [{"title": t} for t in names.get(cat, [])]}}
+
+    subcats, cands = collect.seed_candidates(api=api)
+    assert subcats == ["Category:Sub"] and cands == ["W", "X", "Y", "Z"]
