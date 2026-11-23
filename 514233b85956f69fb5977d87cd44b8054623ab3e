@@ -1,0 +1,7 @@
+vt.idd:task: T001
+vt.idd:domain: documentation
+vt.idd:agents: claude
+vt.idd:files: experiments/wikipedia/review/review_sheet.csv,experiments/wikipedia/review/review_key.csv
+vt.idd:satisfies: partial (files committed; report counts come in T008)
+vt.idd:wave: 0
+vt.idd:timestamp: 2026-11-22T23:19:04-06:00
