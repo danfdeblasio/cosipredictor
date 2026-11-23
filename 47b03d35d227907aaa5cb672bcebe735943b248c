@@ -1,0 +1,8 @@
+vt.idd:task: T004
+vt.idd:domain: backend
+vt.idd:agents: claude
+vt.idd:files: experiments/wikipedia/collect.py,tests/test_wikipedia.py
+vt.idd:tdd: red=4 errors: FileNotFoundError experiments/wikipedia/collect.py, green=31 passed; live --limit 5 smoke run wrote cats/sets/hidden
+vt.idd:satisfies: full
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-11-22T23:28:27-06:00
