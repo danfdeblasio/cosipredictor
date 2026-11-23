@@ -1,0 +1,8 @@
+vt.idd:task: T007
+vt.idd:domain: backend
+vt.idd:agents: claude
+vt.idd:files: experiments/wikipedia/hideseek.py,tests/test_wikipedia.py
+vt.idd:tdd: red=3 errors: FileNotFoundError experiments/wikipedia/hideseek.py, green=38 passed; snapshot run reproduces prototype (88 vs 16 in top 100, AUC 0.960; pool scores identical to 1e-13)
+vt.idd:satisfies: full
+vt.idd:wave: 3
+vt.idd:timestamp: 2026-11-22T23:42:32-06:00
