@@ -5,3 +5,11 @@ vt.idd:files: README.md,experiments/README.md
 vt.idd:satisfies: full
 vt.idd:wave: 5
 vt.idd:timestamp: 2026-11-22T23:51:46-06:00
+
+vt.idd:task: T011
+vt.idd:domain: config
+vt.idd:agents: claude
+vt.idd:files: reports/wikipedia.md
+vt.idd:satisfies: full (diff 5f2e122..HEAD: only README.md and experiments/README.md modified among tracked files; no article text (cache/ gitignored); review CSVs hold Wikipedia titles/descriptions and topic notes only; report aggregates only; pytest tests 124 passed)
+vt.idd:wave: 5
+vt.idd:timestamp: 2026-11-22T23:52:04-06:00
