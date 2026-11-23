@@ -1,0 +1,7 @@
+vt.idd:task: T010
+vt.idd:domain: docs
+vt.idd:agents: claude
+vt.idd:files: README.md,experiments/README.md
+vt.idd:satisfies: full
+vt.idd:wave: 5
+vt.idd:timestamp: 2026-11-22T23:51:46-06:00
