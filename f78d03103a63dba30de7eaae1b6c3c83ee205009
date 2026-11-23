@@ -1,0 +1,8 @@
+vt.idd:task: T003
+vt.idd:domain: backend
+vt.idd:agents: claude
+vt.idd:files: experiments/wikipedia/wikidata.py,tests/test_wikipedia.py
+vt.idd:tdd: red=27 errors: FileNotFoundError experiments/wikipedia/wikidata.py, green=27 passed in 0.85s
+vt.idd:satisfies: partial (helpers for FR-001/003/004/005 done; scripts use them in later waves; FR-013 tests in place)
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-11-22T23:24:05-06:00
