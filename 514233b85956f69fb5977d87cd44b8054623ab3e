@@ -5,3 +5,11 @@ vt.idd:files: experiments/wikipedia/review/review_sheet.csv,experiments/wikipedi
 vt.idd:satisfies: partial (files committed; report counts come in T008)
 vt.idd:wave: 0
 vt.idd:timestamp: 2026-11-22T23:19:04-06:00
+
+vt.idd:task: T002
+vt.idd:domain: config
+vt.idd:agents: claude
+vt.idd:files: cache/wikipedia/sets.json
+vt.idd:satisfies: partial (snapshot placed in gitignored cache (cats 1627 collection, articles 21506, hidden 1339); fetch code in T005)
+vt.idd:wave: 0
+vt.idd:timestamp: 2026-11-22T23:19:10-06:00
