@@ -399,3 +399,66 @@ def test_evaluate_is_deterministic(evaluate):
 
 def test_auc_undefined_for_one_class(wd):
     assert wd.auc(np.array([1, 0]), np.array([0.5, 0.2]), mask=np.array([True, False])) is None
+
+
+# --- hideseek.py --------------------------------------------------------------
+
+@pytest.fixture(scope="module")
+def hideseek():
+    return _load("hideseek")
+
+
+def _toy_hide_data():
+    sets, A = _toy_eval_data()
+    coll = {t: c for c, ts in sets["pos"].items() for t in ts}
+    H = {}
+    hidden = []
+    for i in range(10):
+        t = f"H{i}"
+        cls = ["Stub", "Start", "C", "B"][i % 4]
+        coll[t] = cls
+        hidden.append(t)
+        H[t] = _rec(t, "protein structure sequence alignment genome " * (1 + i % 3), ["1960 births"] if i == 0 else [])
+    disc = []
+    for i in range(30):
+        t = f"P{i}"
+        disc.append(t)
+        sets["source"][t] = "Genetics" if i < 24 else wd_source()
+        A[t] = _rec(t, "city river football town genetics trait" if i % 5 else "protein city river")
+    disc += ["GA0", "H3"]  # a labelled and a hidden article in the pool are dropped from it
+    A["H3"] = H["H3"]
+    sets["discovery"] = disc
+    return sets, A, H, hidden, coll
+
+
+def wd_source():
+    return _load("wikidata").BIOINFO_SOURCE
+
+
+def test_hideseek_pool_excludes_collection_and_hidden(hideseek):
+    sets, A, H, hidden, coll = _toy_hide_data()
+    hid, pool = hideseek.hidden_and_pool(sets, A, H, hidden, coll)
+    titles = {r["title"] for r in pool}
+    assert len(hid) == 10 and len(pool) == 30
+    assert "GA0" not in titles and "H3" not in titles
+
+
+def test_hideseek_results(hideseek):
+    sets, A, H, hidden, coll = _toy_hide_data()
+    res, scores = hideseek.hideseek(sets, A, H, hidden, coll, _FakeCOSI(), n_neg=10)
+    assert set(res["methods"]) == set(hideseek.METHODS) | {hideseek.MORE}
+    m = res["methods"][hideseek.PROTO]
+    assert m["n_hidden"] == 10 and m["n_pool"] == 30 and m["auc"] > 0.9
+    more = res["methods"][hideseek.MORE]
+    assert more["n_pool"] == 30 - 10  # each fold scores the pool minus its 10 negatives
+    assert [r["cls"] for r in res["by_class"]] == ["Stub", "Start", "C", "B"]  # GA is never hidden
+    assert res["bio"]["n"] == 1
+    assert len(scores) == 30 and scores["used_as_negative"].sum() == 20
+    assert scores["score"].notna().all()
+    assert list(scores.columns) == hideseek.POOL_COLUMNS
+
+
+def test_hideseek_is_deterministic(hideseek):
+    a, sa = hideseek.hideseek(*_toy_hide_data(), _FakeCOSI(), n_neg=10)
+    b, sb = hideseek.hideseek(*_toy_hide_data(), _FakeCOSI(), n_neg=10)
+    assert a == b and sa.equals(sb)
