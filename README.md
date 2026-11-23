@@ -24,6 +24,7 @@ for deploying the web app.
 | `model.joblib` | Trained model (scikit-learn 1.6.1) |
 | `web/` | PHP web app, including the exported model in `web/data/` |
 | `reports/eda.md` | Data-exploration report on the real submission data, written by `explore.py` |
+| `reports/wikipedia.md` | Finding missing Wikipedia CompBio articles: evaluation, hide-and-seek, blind review and quality tables, written by `experiments/wikipedia/report.py` |
 | `experiments/` | Reproduction of METHODS.md and evaluation experiments (see `experiments/README.md`) |
 | `tests/`, `requirements-dev.txt` | `pytest` tests on synthetic data, and the test dependency |
 
@@ -63,6 +64,12 @@ defaults to `model.joblib`. Unless noted, the scripts need only scikit-learn, pa
 | `embed.py` | Library used by `compare.py`: SPECTER2 embeddings of title + keywords + abstract | — | — | `transformers`, `adapters`, `torch`; Internet access on first run (downloads SPECTER2 from Hugging Face) |
 | `compare_stemming.py` | Compare the classifier with and without Porter stemming, with a paired bootstrap | Submission CSVs; `--cosis`; `--holdout` (default `ISMB2026`); `--bootstrap` (default 1000) | Metrics and confidence intervals on stdout | `nltk` |
 | `common.py` | Library: CSV loading, track-name normalization (`ALIASES`) and `filter_training_data`, the training filter shared by `train.py` and `explore.py` | — | — | — |
+| `experiments/wikipedia/collect.py` | List WikiProject Computational Biology and draw the labelled sample, controls, candidate pool and hidden set (seed 2026) | `--cache` (default `cache/wikipedia`); `--limit N` for a smoke run | `cats.json`, `sets.json`, `hidden.json` in `--cache` | Internet access |
+| `experiments/wikipedia/fetch.py` | Download every article in those sets, 20 per request; resumable | `--cache`; `--limit N` | `articles.jsonl`, `hidden.jsonl` in `--cache` (gitignored: article text) | Internet access |
+| `experiments/wikipedia/evaluate.py` | AUC of the COSI scores and the Wikipedia-trained classifier per control type, biographies, lead length, quality correlation | `--cache`; `--model` | `results.json` in `--cache` | `scipy` |
+| `experiments/wikipedia/hideseek.py` | Hide unused collection articles among the candidates and measure how high each method ranks them | `--cache`; `--model` | `hideseek.json`, `pool_scores.csv` in `--cache` | — |
+| `experiments/wikipedia/report.py` | Build the report from the result files and the blind review in `experiments/wikipedia/review/` | `--cache`; `--model`; `--fetch-date` | `--out` (default `reports/wikipedia.md`, aggregates only) | — |
+| `experiments/wikipedia/wikidata.py` | Library for the scripts above: batched Wikipedia API, biography flag, model fields (via `wiki.to_fields`), ranking metrics | — | — | Internet access |
 
 To run the tests (synthetic data only), use Python 3.10 or newer, because one test loads
 `experiments/repro_counts.py`, which needs it. With the packages from Usage installed, run
