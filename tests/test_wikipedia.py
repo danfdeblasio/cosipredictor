@@ -324,3 +324,78 @@ def test_candidates_from_seed_categories(collect):
 
     subcats, cands = collect.seed_candidates(api=api)
     assert subcats == ["Category:Sub"] and cands == ["W", "X", "Y", "Z"]
+
+
+# --- evaluate.py --------------------------------------------------------------
+
+@pytest.fixture(scope="module")
+def evaluate():
+    return _load("evaluate")
+
+
+class _FakeCOSI:
+    """Stands in for model.joblib: 3 classes, the first one gets more weight when the text says 'protein'."""
+    classes_ = np.array(["A", "B", "C"])
+
+    def predict_proba(self, X):
+        out = []
+        for _, r in X.iterrows():
+            text = " ".join(str(v) for v in r.values).lower()
+            a = 0.8 if "protein" in text else 0.4
+            out.append([a, (1 - a) / 2, (1 - a) / 2])
+        return np.array(out)
+
+
+def _rec(q, text, cats=(), status="ok"):
+    return {"query": q, "title": q, "url": f"https://en.wikipedia.org/wiki/{q}", "description": "", "status": status,
+            "categories": list(cats), "text": text, "length": len(text) * 3}
+
+
+def _toy_eval_data():
+    pos = {c: [f"{c}{i}" for i in range(4)] for c in ["GA", "B", "C", "Start", "Stub"]}
+    sets = {"pos": pos, "near": {"Genetics": [f"N{i}" for i in range(6)]}, "random": [f"R{i}" for i in range(6)],
+            "easy": [f"E{i}" for i in range(4)], "discovery": [], "source": {}}
+    A = {}
+    for cls, ts in pos.items():
+        for i, t in enumerate(ts):
+            A[t] = _rec(t, "protein sequence alignment " * (2 + i) + cls, ["1950 births"] if t == "B0" else [])
+    for t in sets["near"]["Genetics"]:
+        A[t] = _rec(t, "gene inheritance trait genetics city")
+    for t in sets["random"] + sets["easy"]:
+        A[t] = _rec(t, "football city river town")
+    A["E3"] = _rec("E3", "", status="missing")
+    return sets, A
+
+
+def test_labelled_frame(evaluate):
+    sets, A = _toy_eval_data()
+    L, R = evaluate.labelled_frame(sets, A)
+    assert len(L) == len(R) == 20 + 6 + 6 + 3  # E3 is missing and dropped
+    assert set(L["set"]) == {"CompBio", "Near field", "Random", "Lonnie examples"}
+    assert L.y.sum() == 20 and L.loc[L["query"] == "B0", "bio"].item()
+    assert L.loc[L["query"] == "GA0", "cls"].item() == "GA"
+
+
+def test_evaluate_results_shape(evaluate):
+    sets, A = _toy_eval_data()
+    res = evaluate.evaluate(sets, A, _FakeCOSI(), folds=2)
+    methods = {r["method"]: r for r in res["stage1"]}
+    assert set(methods) == set(evaluate.METHODS)
+    row = methods[evaluate.STEP1]
+    assert set(row) >= {"all", "Lonnie examples", "Random", "Near field", "no biographies"}
+    assert row["all"] > 0.9
+    assert [r["min_chars"] for r in res["length_filter"]] == evaluate.LENGTH_THRESHOLDS
+    assert {r["measure"] for r in res["stage2"]} >= {"Whole page size (bytes)", "Top score (Dan's tool)"}
+    assert res["n"]["CompBio"] == 20 and res["bio"]["compbio_bio_n"] == 1
+    assert res["model_classes"] == 3
+
+
+def test_evaluate_is_deterministic(evaluate):
+    sets, A = _toy_eval_data()
+    a = evaluate.evaluate(sets, A, _FakeCOSI(), folds=2)
+    b = evaluate.evaluate(sets, A, _FakeCOSI(), folds=2)
+    assert a == b
+
+
+def test_auc_undefined_for_one_class(wd):
+    assert wd.auc(np.array([1, 0]), np.array([0.5, 0.2]), mask=np.array([True, False])) is None

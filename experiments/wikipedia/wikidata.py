@@ -189,6 +189,8 @@ def entropy(P):
 def auc(y, s, mask=None):
     y, s = np.asarray(y), np.asarray(s)
     m = np.ones(len(y), bool) if mask is None else np.asarray(mask)
+    if len(set(y[m])) < 2:
+        return None  # undefined when the subset has only one class
     return round(float(roc_auc_score(y[m], s[m])), 3)
 
 
