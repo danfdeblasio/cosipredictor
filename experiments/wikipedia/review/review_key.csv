@@ -1,0 +1,100 @@
+id,title,found_by,rank_dan,cosi,cosi_score,rank_ours,score,bio,source
+1,XCMS Online,Wikipedia classifier,1593,CompMS,0.741167485708678,12,0.99238831167669,False,Bioinformatics/Comp. biology categories
+2,Claudia Neuhauser,Wikipedia classifier,10979,Education,0.206325310335924,42,0.9794693905883192,True,Bioinformatics/Comp. biology categories
+3,BASys,Wikipedia classifier,9844,EvolCompGen,0.2269690127870715,26,0.9849912431471356,False,Bioinformatics/Comp. biology categories
+4,Economics of networks,Dan,14,NetBio,0.9994658387804488,3003,0.296288145703491,False,Computer science
+5,Sue Jones (computational biologist),Wikipedia classifier,4931,3DSIG,0.3979035202931604,23,0.9868084502587228,True,Bioinformatics/Comp. biology categories
+6,DESeq2,Wikipedia classifier,4932,HiTSeq,0.39789873220543,27,0.9841991817584615,False,Bioinformatics/Comp. biology categories
+7,British Mass Spectrometry Society,Dan,15,CompMS,0.9992880276780468,3450,0.2670398723453628,False,Chemistry
+8,Spanish National Bioinformatics Institute,Wikipedia classifier,4652,BioInfo-Core,0.4142383432916123,37,0.9815236859904516,False,Bioinformatics/Comp. biology categories
+9,Small interfering RNA,Dan,24,iRNA,0.9986042364018292,3979,0.239196146501977,False,Molecular biology
+10,Eukaryotic Promoter Database,Wikipedia classifier,8598,BOSC,0.2554312029083257,20,0.9891972019781632,False,Bioinformatics/Comp. biology categories
+11,Susana Vinga,Wikipedia classifier,5281,Education,0.379800944029069,38,0.9809595855875308,True,Bioinformatics/Comp. biology categories
+12,Virus Pathogen Database and Analysis Resource,Wikipedia classifier,11469,BOSC,0.1985640506333097,32,0.982778275170294,False,Bioinformatics/Comp. biology categories
+13,Network automaton,Dan,25,NetBio,0.9984463884588608,5607,0.1757532858397304,False,Physics
+14,Ken Chen (computational biologist),Wikipedia classifier,10685,3DSIG,0.2102742579491428,3,0.9972998308459746,True,Bioinformatics/Comp. biology categories
+15,Nanotechnology education,Dan,20,Education,0.9990737441333688,3134,0.2871330299733126,False,Chemistry
+16,Wojciech Karlowski,Wikipedia classifier,12696,Education,0.1798071958510243,5,0.9962743664257444,True,Bioinformatics/Comp. biology categories
+17,Root microbiome,Dan,5,MICROBIOME,0.9998823722711768,18287,0.0340837944815747,False,Microbiology
+18,Bioinformatics Institute (Singapore),Wikipedia classifier,3586,BioInfo-Core,0.4961180913718974,41,0.9799338395015332,False,Bioinformatics/Comp. biology categories
+19,PDBe-KB,Wikipedia classifier,6581,BOSC,0.31898917002207,47,0.976406307303411,False,Biochemistry
+20,Expression Atlas,Wikipedia classifier,7656,RegSys,0.2808994221995586,28,0.984118191147946,False,Genetics
+21,Text mining,Dan,2,TextMining,0.9999467254287396,1664,0.4373324195437594,False,Machine learning
+22,Paul de Bakker,Wikipedia classifier,14047,Education,0.1616722648463897,46,0.9765773427838872,True,Bioinformatics/Comp. biology categories
+23,Echinobase,Wikipedia classifier,2240,BOSC,0.6411133260674918,9,0.9929474281450236,False,Bioinformatics/Comp. biology categories
+24,RNA timestamp,Dan,6,iRNA,0.999786635208612,1597,0.4484040898168972,False,Molecular biology
+25,SR1 RNA,Dan,3,iRNA,0.9999394791121646,5686,0.1731242778639086,False,Molecular biology
+26,GeneTalk,Wikipedia classifier,7653,VarI,0.2810173840918745,24,0.985743325620473,False,Molecular biology
+27,Linked network,Dan,22,NetBio,0.9986990503371858,3790,0.2489274476547602,False,Statistics
+28,Yana Bromberg,Wikipedia classifier,11153,MLCSB,0.2035213436693199,29,0.9841065405774424,True,Bioinformatics/Comp. biology categories
+29,Louxin Zhang,Wikipedia classifier,15987,Education,0.1409964749963456,4,0.9964779322954124,True,Bioinformatics/Comp. biology categories
+30,John Marioni,Wikipedia classifier,16914,TransMed,0.1324216100888307,13,0.9919735668800924,True,Genetics
+31,'The All-Species Living Tree' Project,Wikipedia classifier,5933,EvolCompGen,0.3477741599243992,43,0.9786897070193548,False,Microbiology
+32,Marcus Feldman,Wikipedia classifier,5877,EvolCompGen,0.3509208673708382,6,0.9947876425784704,True,Bioinformatics/Comp. biology categories
+33,Phytoplankton microbiome,Dan,11,MICROBIOME,0.9994911299879244,12816,0.0694246047144692,False,Microbiology
+34,Small nuclear RNA,Dan,23,iRNA,0.9986859594371674,14434,0.0576723527615879,False,Molecular biology
+35,PubMed,Wikipedia classifier,5625,TextMining,0.3625059292224324,45,0.9767341249870612,False,Bioinformatics/Comp. biology categories
+36,Joint Universities Accelerator School,Dan,37,Education,0.9976717919035998,2901,0.3042720180116281,False,Physics
+37,RNA editing,Dan,49,iRNA,0.9970834150191454,2016,0.3917781669054759,False,Molecular biology
+38,Streptomyces-metKH RNA motif,Dan,47,iRNA,0.997233030379772,952,0.5939411403634833,False,Molecular biology
+39,Salivary microbiome,Dan,50,MICROBIOME,0.9970288558858684,10044,0.0950872511054027,False,Microbiology
+40,Therapeutic Targets Database,Wikipedia classifier,3025,TransMed,0.5456750552557538,34,0.9825656674086936,False,Molecular biology
+41,Small nucleolar RNA U3,Dan,42,iRNA,0.9973775408062918,6233,0.1592444251265374,False,Molecular biology
+42,Data-independent acquisition,Dan,12,CompMS,0.9994850049093688,1716,0.4300524266147396,False,Biochemistry
+43,Contemporary Physics Education Project,Dan,19,Education,0.9990926277729536,7418,0.1338646457990098,False,Physics
+44,RNA silencing,Dan,29,iRNA,0.9983091247629308,8840,0.1103103750005684,False,Molecular biology
+45,Mathematics education,Dan,18,Education,0.9991880814552196,10273,0.0926230695900141,False,Mathematics
+46,Computing education,Dan,26,Education,0.998433752476064,4660,0.2064356961892239,False,Computer science
+47,DcGO,Wikipedia classifier,2829,BOKR,0.5681465548356586,25,0.9853257389263436,False,Genetics
+48,Overlay network,Dan,4,NetBio,0.9999085316530428,13048,0.0675222093722389,False,Computer science
+49,European Pollen Database,Wikipedia classifier,17060,TextMining,0.1312506365801141,49,0.974335268092243,False,Bioinformatics/Comp. biology categories
+50,Qlucore,Wikipedia classifier,4557,BOSC,0.4196442344043185,48,0.9760029255663708,False,Bioinformatics/Comp. biology categories
+51,M. Madan Babu,Wikipedia classifier,15101,Education,0.1483054675278604,36,0.9823820830367928,True,Bioinformatics/Comp. biology categories
+52,GigaDB,Wikipedia classifier,1080,BOSC,0.8343233711843767,31,0.9833297581396616,False,Bioinformatics/Comp. biology categories
+53,Statistics education,Dan,36,Education,0.9977495567887632,13931,0.0611716339481008,False,Statistics
+54,Protein quinary structure,Dan,34,3DSIG,0.9978808225251772,2101,0.3827550836119943,False,Molecular biology
+55,Pubmeth,Wikipedia classifier,8761,TransMed,0.2516042106367365,40,0.980053595451892,False,Biochemistry
+56,Ontology Inference Layer,Dan,27,BOKR,0.9984235778657156,1101,0.5511753737673057,False,Computer science
+57,Genome informatics,Wikipedia classifier,7765,BOSC,0.2777606939543221,1,0.9990509297159696,False,Bioinformatics/Comp. biology categories
+58,Phytozome,Wikipedia classifier,1415,EvolCompGen,0.7696339759328676,15,0.9911293974837366,False,Bioinformatics/Comp. biology categories
+59,Heiko Enderling,Wikipedia classifier,13088,TransMed,0.1739318687132481,39,0.9808008922894048,True,Bioinformatics/Comp. biology categories
+60,GreeNC,Wikipedia classifier,15624,iRNA,0.1429683132045514,22,0.9870542687151944,False,Bioinformatics/Comp. biology categories
+61,Einstein function,Dan,35,Function,0.9978088065579122,16697,0.043262281933044,False,Mathematics
+62,Mass spectrometry,Dan,13,CompMS,0.9994683725786916,8078,0.1220322089968915,False,Biochemistry
+63,François Balloux,Wikipedia classifier,8504,Education,0.2578621059690326,33,0.9827677296316484,True,Bioinformatics/Comp. biology categories
+64,Christos Ouzounis,Wikipedia classifier,9870,BOSC,0.2264471035344264,8,0.9944602031741276,True,Bioinformatics/Comp. biology categories
+65,Human Metabolome Database,Wikipedia classifier,1956,CompMS,0.6834017901021702,14,0.9914445793805992,False,Biochemistry
+66,Histone Database,Wikipedia classifier,7312,3DSIG,0.2927350773524035,7,0.994626774729815,False,Molecular biology
+67,Attention (machine learning),Dan,17,MLCSB,0.9991891377624952,12904,0.0687960843587991,False,Machine learning
+68,Proteogenomics,Both,10,CompMS,0.9995058069577988,30,0.9837747774440112,False,Genetics
+69,John C. Wooley,Wikipedia classifier,14008,Education,0.1622392858419624,35,0.982552770088768,True,Bioinformatics/Comp. biology categories
+70,Stein Aerts,Wikipedia classifier,14134,SysMod,0.160418080469247,44,0.9783062531947792,True,Bioinformatics/Comp. biology categories
+71,Small nucleolar RNA,Dan,7,iRNA,0.9997739327195044,7980,0.1238799524181594,False,Molecular biology
+72,Uterine microbiome,Dan,46,MICROBIOME,0.997238103766321,10333,0.0920369120584635,False,Microbiology
+73,Martin Steinegger (scientist),Wikipedia classifier,16317,BOSC,0.1377347699603968,10,0.9926370668552976,True,Bioinformatics/Comp. biology categories
+74,Ecological network,Dan,16,NetBio,0.999267288502494,2567,0.3314570369687529,False,Ecology
+75,Physics education,Dan,41,Education,0.9973863629665728,10903,0.0861237090760172,False,Physics
+76,RNA,Dan,9,iRNA,0.999654979166513,1785,0.4229515121115057,False,Molecular biology
+77,Frontoparietal network,Dan,39,NetBio,0.997619300971114,5382,0.1819124246553699,False,Neuroscience
+78,Hyperparameter (machine learning),Dan,28,MLCSB,0.998421641278793,6045,0.1639490979226584,False,Machine learning
+79,Mass spectrometric immunoassay,Dan,30,CompMS,0.9982717863130915,3817,0.2476308850342031,False,Biochemistry
+80,Gradient network,Dan,48,NetBio,0.9971330308021472,6894,0.1445378155280983,False,Computer science
+81,Epstein–Barr virus small nucleolar RNA 1,Dan,45,iRNA,0.9972584438189316,6324,0.1571758997428397,False,Molecular biology
+82,Small temporal RNA,Dan,38,iRNA,0.9976398729026936,3190,0.2831881749981446,False,Molecular biology
+83,Brian D. Athey,Wikipedia classifier,12707,Education,0.1796760841028324,21,0.9882641280935216,True,Bioinformatics/Comp. biology categories
+84,GWAS catalog,Wikipedia classifier,906,VarI,0.8638920196451426,17,0.9903280265390308,False,Genetics
+85,UxuA RNA motif,Dan,33,iRNA,0.9979299505213096,1300,0.504586651749011,False,Molecular biology
+86,Offline learning,Dan,43,MLCSB,0.997364485008995,8894,0.1094355657198156,False,Machine learning
+87,Astronomy education,Dan,8,Education,0.9997159965662156,3802,0.2484641688134341,False,Physics
+88,Transposase-2 RNA motif,Dan,40,iRNA,0.9974460133404436,1034,0.569722064965134,False,Molecular biology
+89,Serum Metabolome Database,Wikipedia classifier,3935,CompMS,0.4671266129484038,50,0.9733597541396352,False,Bioinformatics/Comp. biology categories
+90,RNA Modification Base,Dan,44,iRNA,0.9972727894768656,277,0.8587528927220842,False,Genetics
+91,Mitointeractome,Wikipedia classifier,7816,3DSIG,0.2764960443299057,11,0.9925660623160784,False,Molecular biology
+92,GeWorkbench,Wikipedia classifier,2409,BOSC,0.6192843909706073,19,0.9894904171513372,False,Bioinformatics/Comp. biology categories
+93,Gene Expression Omnibus,Wikipedia classifier,4159,RegSys,0.449068611159534,18,0.9898820605061422,False,Genetics
+94,Viral Bioinformatics Resource Center,Wikipedia classifier,4696,BOSC,0.4107439869807185,2,0.9987056666889425,False,Bioinformatics/Comp. biology categories
+95,Small Cajal body-specific RNA,Dan,31,iRNA,0.998160206450842,16236,0.0459077465654056,False,Biochemistry
+96,Open JTAG,Dan,21,BOSC,0.999055866126654,2086,0.3851029829953272,False,Computer science
+97,GRP RNA motif,Dan,32,iRNA,0.998036517918568,5945,0.1663056140186382,False,Molecular biology
+98,Bottom-up proteomics,Dan,1,CompMS,0.9999994613234762,423,0.793111119440497,False,Bioinformatics/Comp. biology categories
+99,100K Pathogen Genome Project,Wikipedia classifier,6601,HiTSeq,0.3181767746689665,16,0.9909885466138656,False,Bioinformatics/Comp. biology categories
