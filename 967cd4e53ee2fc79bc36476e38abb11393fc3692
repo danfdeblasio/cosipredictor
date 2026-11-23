@@ -1,0 +1,7 @@
+vt.idd:task: T009
+vt.idd:domain: backend
+vt.idd:agents: claude
+vt.idd:files: reports/wikipedia.md
+vt.idd:satisfies: full (collect/fetch --limit smoke runs in a scratch cache; evaluate, hideseek and report on the 2026-11-20 snapshot match the prototype (AUC 0.725/0.947, 88 vs 16, 48/50 vs 3/50, Spearman 0.755))
+vt.idd:wave: 4
+vt.idd:timestamp: 2026-11-22T23:48:02-06:00
