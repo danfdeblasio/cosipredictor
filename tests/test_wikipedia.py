@@ -462,3 +462,55 @@ def test_hideseek_is_deterministic(hideseek):
     a, sa = hideseek.hideseek(*_toy_hide_data(), _FakeCOSI(), n_neg=10)
     b, sb = hideseek.hideseek(*_toy_hide_data(), _FakeCOSI(), n_neg=10)
     assert a == b and sa.equals(sb)
+
+
+# --- report.py ----------------------------------------------------------------
+
+@pytest.fixture(scope="module")
+def report():
+    return _load("report")
+
+
+LABEL = "is_compbio (yes/no/unsure)"
+
+
+def _toy_review():
+    sheet, key = [], []
+    for i in range(1, 101):
+        tool = "Wikipedia classifier" if i <= 50 else "Dan"
+        rank = i if i <= 50 else i - 50
+        label = ("yes" if rank != 7 else "unsure") if tool != "Dan" else ("yes" if rank <= 3 else "no")
+        sheet.append({"id": str(i), "title": f"T{i}", "url": "", "description": f"secret description {i}",
+                      LABEL: label, "quality (Stub/Start/C/B)": "", "comment": ""})
+        key.append({"id": str(i), "title": f"T{i}", "found_by": tool,
+                    "rank_ours": str(rank if tool != "Dan" else 9999), "rank_dan": str(rank if tool == "Dan" else 9999),
+                    "bio": str(tool != "Dan" and rank <= 4), "cosi": "X", "cosi_score": "0.5", "score": "0.9",
+                    "source": ""})
+    key[0]["found_by"] = "Both"
+    key[0]["rank_dan"] = "2"
+    return sheet, key
+
+
+def test_review_counts(report):
+    sheet, key = _toy_review()
+    r = report.review_counts(sheet, key)
+    ours, dan = r["Wikipedia classifier"], r["Dan"]
+    assert ours["top50"] == {"yes": 49, "unsure": 1, "no": 0}
+    assert ours["bands"]["1-10"] == {"yes": 9, "unsure": 1, "no": 0}
+    assert dan["bands"]["1-10"]["yes"] == 4  # article 1 is shared and sits at Dan's rank 2
+    assert ours["bio_proposed"] == 4 and ours["bio_yes"] == 4
+    assert dan["bio_proposed"] == 1  # the shared article is a biography
+
+
+def test_build_report_sections_and_privacy(report):
+    sheet, key = _toy_review()
+    sets, A = _toy_eval_data()
+    ev = _load("evaluate").evaluate(sets, A, _FakeCOSI(), folds=2)
+    hs, _ = _load("hideseek").hideseek(*_toy_hide_data(), _FakeCOSI(), n_neg=10)
+    meta = {"fetch_date": "2026-11-20", "model": "model-16.joblib", "versions": {"Python": "3.12"}}
+    md = report.build_report(ev, hs, sheet, key, meta)
+    for heading in ["## Step 1", "## Hide-and-seek", "## Blind review", "## Quality", "## Caveats"]:
+        assert heading in md
+    assert "2026-11-20" in md and "model-16.joblib" in md and "Python 3.12" in md
+    assert "44, 46, 62, 68, 79, 96" in md and "21–30" in md
+    assert "secret description" not in md  # no article text in the report
